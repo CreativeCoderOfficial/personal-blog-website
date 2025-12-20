@@ -1,21 +1,70 @@
-// src/components/homepage/HeroSection.tsx
-export default function HeroSection() {
-  return (
-    <section className="w-full py-24 bg-gray-900 text-white text-center">
-      <h1 className="text-4xl md:text-6xl font-bold mb-4">
-        Welcome to My Personal Blog
-      </h1>
-      <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
-        I share projects, ideas, tutorials, and everything I learn as a developer.
-      </p>
+// src/app/components/Hero.tsx
+import Link from "next/link";
 
-      <div className="mt-8">
-        <a
-          href="#features"
-          className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-lg font-semibold"
-        >
-          Explore Features
-        </a>
+export default function Hero() {
+  return (
+    <section className="relative overflow-hidden bg-main pt-20 pb-32">
+      {/* THE GLOW EFFECT 
+        - This is an absolute positioned div behind the content.
+        - We use your 'accent-purple' and 'accent-pink' tokens.
+        - 'blur-[100px]' creates that soft, dispersed look.
+      */}
+      <div 
+        className="
+          absolute top-10 -right-20 
+          w-[500px] h-[500px] 
+          bg-gradient-to-b from-accent-purple/30 to-accent-pink/30 
+          rounded-full 
+          blur-[100px] 
+          pointer-events-none 
+          opacity-50
+        " 
+      />
+
+      <div className="container mx-auto px-8 relative z-10">
+        <div className="max-w-2xl">
+          {/* Main Headline */}
+          <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-text-primary leading-tight">
+            Welcome to <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-orange to-accent-pink">
+              My Portfolio
+            </span>
+          </h1>
+
+          {/* Subtext */}
+          <p className="mt-6 text-lg text-text-secondary max-w-lg">
+            Sharing knowledge, resources, and insights through compelling content. 
+            Join me on my journey of continuous learning.
+          </p>
+
+          {/* Buttons Area */}
+          <div className="mt-10 flex flex-wrap gap-4">
+            
+            {/* Primary Button: Gradient Background */}
+            <Link 
+              href="/blogs"
+              className="
+                px-8 py-3 rounded-md font-semibold text-white
+                bg-gradient-to-r from-accent-orange to-accent-pink
+                hover:opacity-90 transition-opacity
+              "
+            >
+              Read My Blogs
+            </Link>
+
+            {/* Secondary Button: Subtle Border */}
+            <Link 
+              href="/resources"
+              className="
+                px-8 py-3 rounded-md font-semibold text-text-primary
+                border border-border-subtle
+                hover:bg-white/5 transition-colors
+              "
+            >
+              Explore Resources
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
   );
