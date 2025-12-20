@@ -1,7 +1,7 @@
 // src/app/components/Features.tsx
 import { BookOpen, Link as LinkIcon, Lightbulb } from "lucide-react";
 
-export default function Features() {
+export default function FeatureSection() {
   const features = [
     {
       title: "Articles & Blogs",

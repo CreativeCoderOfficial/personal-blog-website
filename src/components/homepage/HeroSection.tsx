@@ -1,7 +1,7 @@
 // src/app/components/Hero.tsx
 import Link from "next/link";
 
-export default function Hero() {
+export default function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-main pt-20 pb-32">
       {/* THE GLOW EFFECT 
