@@ -6,9 +6,6 @@ import ContactSection from "@/components/homepage/ContactSection";
 export default function HomePage() {
   return (
     <>
-      <HeroSection />
-      <FeaturesSection />
-      <ContactSection />
     </>
   );
 }
