@@ -1,26 +1,53 @@
 @import "tailwindcss";
 
+/* 1. Define your Design Tokens (The "DNA" of your site) */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Backgrounds: Deep navy blues for that "space" feel */
+  --bg-main: #0b1023;
+  --bg-secondary: #111633;
+  --bg-card: rgba(255, 255, 255, 0.04);
+
+  /* Text Colors */
+  --text-primary: #f1f5f9; /* Slate-100: Softer than pure white */
+  --text-secondary: #94a3b8; /* Slate-400: Good for subtitles */
+
+  /* Brand Accents - Matching your image */
+  --accent-orange: #fb923c; 
+  --accent-pink: #ec4899;
+  --accent-purple: #a855f7;
+
+  /* Utility Colors */
+  --border-subtle: rgba(255, 255, 255, 0.1); /* 10% white for faint lines */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* 2. Map Tokens to Tailwind Classes
+   This allows you to use className="bg-main" or className="text-accent-orange" 
+*/
+@theme {
+  /* Usage: bg-main, border-main, text-main */
+  --color-main: var(--bg-main);
+  
+  /* Usage: bg-secondary */
+  --color-secondary: var(--bg-secondary);
+  
+  /* Usage: bg-card */
+  --color-card: var(--bg-card);
+
+  /* Usage: text-primary-text (Renamed to avoid conflict with default 'text-primary') */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+
+  /* Usage: text-accent-orange, border-accent-orange, bg-accent-orange */
+  --color-accent-orange: var(--accent-orange);
+  --color-accent-pink: var(--accent-pink);
+  --color-accent-purple: var(--accent-purple);
+
+  /* Usage: border-subtle */
+  --color-border-subtle: var(--border-subtle);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* 3. Global Reset */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-main);
+  color: var(--text-primary);
 }

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import NavLink from "./NavLink";
-import ActiveDot from "./ActiveDot";
+import ActiveDot from "../ui/ActiveDot";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
