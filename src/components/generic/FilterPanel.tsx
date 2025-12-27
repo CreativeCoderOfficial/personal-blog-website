@@ -1,36 +1,44 @@
-import { Search, Calendar, Filter, X } from "lucide-react";
+import { Search, Filter, X } from "lucide-react";
 
-interface BlogFilterBarProps {
-  // We are keeping these visual-only for now as requested
-  categories: string[]; 
-  selectedCategories: string[]; // Now an array for multi-select
-  setSelectedCategories: (categories: string[]) => void;
+interface FilterPanelProps {
+  // --- SEARCH PROPS ---
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  searchPlaceholder?: string; // Customizable placeholder
+
+  // --- DATE PROPS ---
   dateFrom: string;
   setDateFrom: (date: string) => void;
   dateTo: string;
   setDateTo: (date: string) => void;
-  searchTerm: string;
-  setSearchTerm: (term: string) => void;
+
+  // --- FILTER OPTION PROPS (Renamed from 'categories') ---
+  filterOptions: string[]; 
+  selectedOptions: string[];
+  setSelectedOptions: (options: string[]) => void;
+  filterLabel?: string; // e.g. "Filter by Category" or "Filter by File Type"
 }
 
-export default function BlogFilterBar({
-  categories,
-  selectedCategories,
-  setSelectedCategories,
+export default function FilterPanel({
+  searchTerm,
+  setSearchTerm,
+  searchPlaceholder = "Search...",
   dateFrom,
   setDateFrom,
   dateTo,
   setDateTo,
-  searchTerm,
-  setSearchTerm,
-}: BlogFilterBarProps) {
+  filterOptions,
+  selectedOptions,
+  setSelectedOptions,
+  filterLabel = "Filter by Category",
+}: FilterPanelProps) {
 
-  // Helper to toggle categories visual state
-  const toggleCategory = (category: string) => {
-    if (selectedCategories.includes(category)) {
-      setSelectedCategories(selectedCategories.filter((c) => c !== category));
+  // Toggle Logic
+  const toggleOption = (option: string) => {
+    if (selectedOptions.includes(option)) {
+      setSelectedOptions(selectedOptions.filter((o) => o !== option));
     } else {
-      setSelectedCategories([...selectedCategories, category]);
+      setSelectedOptions([...selectedOptions, option]);
     }
   };
 
@@ -54,17 +62,26 @@ export default function BlogFilterBar({
           " />
           <input 
             type="text" 
-            placeholder="Search articles..." 
+            placeholder={searchPlaceholder}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="
-              w-full pl-12 pr-4 py-4
+              w-full pl-12 pr-10 py-4
               bg-main/50 border border-border-subtle rounded-xl 
               text-text-primary placeholder:text-text-secondary/50
               focus:outline-none focus:border-accent-purple focus:ring-1 focus:ring-accent-purple
               transition-all
             "
           />
+          {/* IMPROVEMENT: Clear Search Button */}
+          {searchTerm && (
+            <button 
+              onClick={() => setSearchTerm("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         {/* 2. DATE RANGE INPUTS */}
@@ -107,23 +124,22 @@ export default function BlogFilterBar({
             />
           </div>
         </div>
-
       </div>
 
-      {/* BOTTOM ROW: Multi-Select Categories */}
+      {/* BOTTOM ROW: Multi-Select Options */}
       <div className="space-y-3">
         <div className="flex items-center gap-2 text-sm text-text-secondary font-medium">
           <Filter className="w-4 h-4" />
-          <span>Filter by Category:</span>
+          <span>{filterLabel}:</span>
         </div>
 
         <div className="flex flex-wrap gap-3">
-          {categories.map((cat) => {
-            const isSelected = selectedCategories.includes(cat);
+          {filterOptions.map((opt) => {
+            const isSelected = selectedOptions.includes(opt);
             return (
               <button
-                key={cat}
-                onClick={() => toggleCategory(cat)}
+                key={opt}
+                onClick={() => toggleOption(opt)}
                 className={`
                   px-4 py-2 rounded-full text-sm font-medium border transition-all duration-300
                   ${isSelected 
@@ -132,15 +148,15 @@ export default function BlogFilterBar({
                   }
                 `}
               >
-                {cat}
+                {opt}
               </button>
             );
           })}
           
-          {/* "Clear All" Action - only shows if something is selected */}
-          {selectedCategories.length > 0 && (
+          {/* Clear Filters Button */}
+          {selectedOptions.length > 0 && (
             <button
-              onClick={() => setSelectedCategories([])}
+              onClick={() => setSelectedOptions([])}
               className="
                 px-4 py-2 rounded-full text-sm font-medium 
                 text-red-400 hover:text-red-300 hover:bg-red-400/10 
