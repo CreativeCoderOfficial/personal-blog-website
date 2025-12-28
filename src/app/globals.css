@@ -51,3 +51,28 @@ body {
   background: var(--bg-main);
   color: var(--text-primary);
 }
+
+
+/* ADMIN THEME OVERRIDE 
+   We redefine the same variable names but with different values.
+   This is to change the color scheme and clearly indicate that you're in.
+*/
+.theme-admin {
+  --bg-main: #09090b;       /* Zinc-950 (Darker, flatter black) */
+  --bg-card: #18181b;       /* Zinc-900 */
+  
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+
+  --border-subtle: rgba(255,255,255, 0.08);
+
+  /* New Accents: Professional Blue & Alert Red */
+  --accent-purple: #3b82f6; /* Blue-500 */
+  --accent-orange: #ef4444; /* Red-500 */
+  
+  /* Update the mapped Tailwind colors to use these new values */
+  --color-main: var(--bg-main);
+  --color-card: var(--bg-card);
+  --color-accent-purple: var(--accent-purple);
+  --color-accent-orange: var(--accent-orange);
+}
