@@ -81,7 +81,7 @@ export default function Header() {
             <NavLink href="/" className="w-3/4 text-center">Home</NavLink>
             <NavLink href="/resources" className="w-3/4 text-center">Resources</NavLink>
             <NavLink href="/blogs" className="w-3/4 text-center">Blogs</NavLink>
-            <NavLink href="/donate" className="w-3/4 text-center">Donate</NavLink>
+            <NavLink href="/support" className="w-3/4 text-center">Support My Work</NavLink>
           </div>
         </nav>
       )}
