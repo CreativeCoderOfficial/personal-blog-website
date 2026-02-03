@@ -13,6 +13,7 @@
 # next.js
 /.next/
 /out/
+.next/
 
 # production
 /build
@@ -25,6 +26,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.log
+*.log*
+
 
 # local env files
 .env*.local
@@ -219,3 +223,8 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Gitleaks reports
+gitleaks-report.json
+gitleaks-*.json
+gitleaks-reports/

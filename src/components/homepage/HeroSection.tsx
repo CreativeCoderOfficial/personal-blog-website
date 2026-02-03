@@ -27,12 +27,11 @@ export default function Hero() {
         " 
       />
 
-      {/* CONTAINER FIXES:
-         1. removed 'container': The default Tailwind container is too narrow for huge monitors.
-         2. w-full max-w-[...] mx-auto: We manually set the max-width.
+      {/*
+         1. w-full max-w-[...] mx-auto: We manually set the max-width.
             - max-w-7xl: Standard width for laptops.
             - 2xl:max-w-[1800px]: Allows content to spread WIDE on monitors.
-         3. Padding (px):
+         . Padding (px):
             - lg:px-16: Gives laptop screens that missing side padding.
             - 2xl:px-24: Comfortable edges on huge screens.
       */}

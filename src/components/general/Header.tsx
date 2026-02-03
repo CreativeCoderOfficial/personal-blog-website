@@ -1,20 +1,24 @@
 // app/components/Header.tsx
 "use client";
+
 import { useState } from "react";
 import Link from "next/link";
-import NavLink from "./NavLink";
-import ActiveDot from "../ui/ActiveDot";
+import NavLink from "./NavLink"; // Adjust path if NavLink is in a different subfolder
+import ActiveDot from "../ui/ActiveDot"; // Adjust path if ActiveDot is elsewhere
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  
+  // State for the "Active Dot" animation (Desktop only)
   const [dotStyle, setDotStyle] = useState<{ left: number } | null>(null);
   const [activeDotStyle, setActiveDotStyle] = useState<{ left: number } | null>(null);
 
+  // Single source of truth for navigation items
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/resources", label: "Resources" },
     { href: "/blogs", label: "Blogs" },
-    { href: "/donate", label: "My Channel" },
+    { href: "/support", label: "My Channel" },
   ];
 
   return (
@@ -25,6 +29,7 @@ export default function Header() {
         bg-gradient-to-r
         from-[#0b1023] via-[#111633] to-[#0b1023]
         border-b border-white/10
+        z-50
       "
     >
       {/* Logo */}
@@ -40,7 +45,7 @@ export default function Header() {
         Portofolio
       </Link>
 
-      {/* Desktop nav */}
+      {/* --- DESKTOP NAVIGATION --- */}
       <nav
         className="relative hidden md:flex items-center gap-6"
         onMouseLeave={() => setDotStyle(activeDotStyle)}
@@ -49,6 +54,7 @@ export default function Header() {
           <NavLink
             key={link.href}
             href={link.href}
+            // These props enable the desktop-only dot animation
             setDotStyle={setDotStyle}
             setActiveDotStyle={setActiveDotStyle}
           >
@@ -56,32 +62,39 @@ export default function Header() {
           </NavLink>
         ))}
 
+        {/* The Sliding Dot */}
         <ActiveDot style={dotStyle} />
       </nav>
 
-      {/* Mobile hamburger */}
+      {/* --- MOBILE HAMBURGER BUTTON --- */}
       <button
-        className="block md:hidden text-2xl"
+        className="block md:hidden text-2xl text-white focus:outline-none"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle menu"
       >
-        ☰
+        {isOpen ? "✕" : "☰"}
       </button>
 
-      {/* Mobile menu unchanged */}
+      {/* --- MOBILE NAVIGATION --- */}
       {isOpen && (
         <nav className="
           absolute top-full left-0 w-full
-          bg-[#1a0f23]
+                  bg-gradient-to-r        from-[#0b1023] via-[#111633] to-[#0b1023]
           border-t border-white/10
-          z-50
+          shadow-2xl
           md:hidden
+          transition-all duration-300 ease-in-out
         ">
-          <div className="flex flex-col items-center gap-2 py-4">
-            <NavLink href="/" className="w-3/4 text-center">Home</NavLink>
-            <NavLink href="/resources" className="w-3/4 text-center">Resources</NavLink>
-            <NavLink href="/blogs" className="w-3/4 text-center">Blogs</NavLink>
-            <NavLink href="/support" className="w-3/4 text-center">Support My Work</NavLink>
+          <div className="flex flex-col items-center gap-4 py-8">
+            {navLinks.map((link) => (
+              <NavLink 
+                key={link.href} 
+                href={link.href} 
+                className="w-3/4 text-center py-2 hover:bg-white/5 rounded-lg transition-colors"
+              >
+                {link.label}
+              </NavLink>
+            ))}
           </div>
         </nav>
       )}

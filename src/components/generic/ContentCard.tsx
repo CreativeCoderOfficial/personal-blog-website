@@ -8,10 +8,11 @@ interface ContentCardProps {
   category: string;
   thumbnailUrl: string;
   date: string;
-  href: string;
-  buttonText?: string;
-  // Generic slot for the top-right badge (e.g., "5 min read" or "PDF")
+  href: string; // Used for the title link
+  buttonText?: string; 
   metaItem?: ReactNode; 
+  // NEW: Slot to override the default footer button
+  customFooter?: ReactNode;
 }
 
 export default function ContentCard({
@@ -23,6 +24,7 @@ export default function ContentCard({
   href,
   buttonText = "Read More",
   metaItem,
+  customFooter, // <--- NEW PROP
 }: ContentCardProps) {
   
   const formattedDate = new Date(date).toLocaleDateString("en-US", {
@@ -56,7 +58,7 @@ export default function ContentCard({
       {/* BODY */}
       <div className="flex-1 p-6 flex flex-col">
         
-        {/* Meta Row: Custom Item + Date */}
+        {/* Meta Row */}
         <div className="flex items-center justify-between text-xs text-text-secondary mb-3">
           <div className="flex items-center gap-1.5">
             {metaItem}
@@ -77,14 +79,19 @@ export default function ContentCard({
           {summary}
         </p>
 
+        {/* Footer Area: Render Custom OR Default */}
         <div className="pt-4 border-t border-border-subtle mt-auto">
-          <Link 
-            href={href}
-            className="flex items-center gap-2 text-sm font-semibold text-text-primary group-hover:translate-x-1 transition-transform"
-          >
-            {buttonText}
-            <ArrowRight className="w-4 h-4 text-accent-orange" />
-          </Link>
+          {customFooter ? (
+            customFooter
+          ) : (
+            <Link 
+              href={href}
+              className="flex items-center gap-2 text-sm font-semibold text-text-primary group-hover:translate-x-1 transition-transform"
+            >
+              {buttonText}
+              <ArrowRight className="w-4 h-4 text-accent-orange" />
+            </Link>
+          )}
         </div>
       </div>
     </div>
