@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Lock, User, ArrowRight, AlertCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 
+
+
 export default function AdminLoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
@@ -22,7 +24,7 @@ export default function AdminLoginPage() {
     // Simulate Network Delay
     setTimeout(() => {
       // HARDCODED CHECK FOR DEMO PURPOSES ONLY
-      if (username === "admin" && password === "password123") {
+      if (username === process.env.MOCK_USERNAME && password === process.env.MOCK_PASSWORD) {
         // Set a cookie (Client-side simulation)
         document.cookie = "admin_session=true; path=/";
         router.push("/admin/dashboard");

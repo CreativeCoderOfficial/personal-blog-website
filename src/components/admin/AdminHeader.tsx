@@ -10,7 +10,7 @@ export default function AdminHeader() {
       </div>
 
       <Link 
-        href="/admin/createpost"
+        href="/admin/posts/new"
         className="
           inline-flex items-center gap-2 px-6 py-3 rounded-xl
           bg-gradient-to-r from-accent-purple to-purple-600 text-white font-bold

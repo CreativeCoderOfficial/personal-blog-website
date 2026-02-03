@@ -58,20 +58,22 @@ export default function MetadataPanel({ postType, formData, setFormData }: Metad
         </div>
       </div>
 
+      <div className="space-y-1">
+        <label className="text-xs text-text-secondary font-semibold">Reading Time</label>
+        <div className="mt-2">
+
+            <input 
+              type="number" 
+              value={formData.readingTime}
+              onChange={(e) => handleChange("readingTime", e.target.value)}
+              className="w-full bg-main border border-border-subtle rounded-lg px-3 py-2 text-sm focus:border-accent-purple outline-none"
+            />
+        </div>
+      </div>
+
       {/* Conditional Fields */}
       {postType === "blog" ? (
-        <div className="space-y-1 pt-4 border-t border-border-subtle">
-          <label className="text-xs text-accent-purple font-bold uppercase">Blog Details</label>
-          <div className="mt-2">
-             <label className="text-xs text-text-secondary font-semibold">Reading Time (mins)</label>
-             <input 
-                type="number" 
-                value={formData.readingTime}
-                onChange={(e) => handleChange("readingTime", e.target.value)}
-                className="w-full bg-main border border-border-subtle rounded-lg px-3 py-2 text-sm focus:border-accent-purple outline-none"
-             />
-          </div>
-        </div>
+        <div></div>
       ) : (
         <div className="space-y-3 pt-4 border-t border-border-subtle">
           <label className="text-xs text-accent-orange font-bold uppercase">Resource Details</label>
@@ -95,6 +97,10 @@ export default function MetadataPanel({ postType, formData, setFormData }: Metad
                <option>ZIP</option>
                <option>PDF</option>
                <option>JSON</option>
+               <option>App</option>
+               <option>Website</option>
+               <option>Platform</option>
+               <option>Product</option>
              </select>
           </div>
         </div>

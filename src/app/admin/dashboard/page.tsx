@@ -116,7 +116,7 @@ export default function AdminDashboard() {
               category={item.category}
               thumbnailUrl={item.thumbnailUrl}
               date={item.createdAt}
-              href={`/admin/edit/${item.id}`} // Clicking title goes to Edit
+              href={`/admin/posts/edit/${item.id}`} // Clicking title goes to Edit
               
               // META ICON: Switches based on type
               metaItem={
@@ -138,7 +138,7 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between gap-3">
                    {/* Edit Button */}
                    <Link 
-                     href={`/admin/edit/${item.id}`}
+                     href={`/admin/posts/edit/${item.id}`}
                      className="flex-1 py-2 rounded-lg bg-main border border-border-subtle hover:bg-white/5 hover:border-text-secondary transition-all flex items-center justify-center gap-2 text-sm font-bold text-text-secondary hover:text-white"
                    >
                      <Edit3 className="w-4 h-4" />
