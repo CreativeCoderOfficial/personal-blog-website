@@ -1,0 +1,97 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PostType {
+  BLOG
+  RESOURCE
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Post {
+  id           Int        @id @default(autoincrement())
+  slug         String     @unique
+  title        String     @db.VarChar(255)
+  summary      String
+  thumbnailUrl String?
+  readingTime  Int
+  type         PostType
+  status       PostStatus @default(DRAFT)
+
+  // Display-only
+  keyTakeaways String[]
+
+  // Relations:
+
+  // Categories are Many-to-Many
+  categories    Category[]     @relation("PostCategories")
+  
+
+  // resourceType is Many-to-one (only one resourceType per post, but many posts have the same resourceType)
+  resourceType   ResourceType?  @relation(fields: [resourceTypeId], references: [id])
+  resourceTypeId Int?
+
+  // Sections are One-to-Many
+  sections      Section[]  
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Resource-only fields (nullable for blogs)
+  resourceCost Float?
+  resourceRating Float?
+  resourceLink String?
+
+  @@index([type])
+  @@index([slug])
+}
+
+model Section {
+  id        Int     @id @default(autoincrement())
+  post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    Int
+  order     Int
+
+  // All are optional, this means that we can also just add an extra image below for instance
+  title            String?
+  content          String?
+  imageUrl         String?
+  imageDescription String?
+
+  @@index([postId])
+  @@unique([postId, order])
+}
+
+
+model Category {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  color String  // hex code or css color string (This is to consistenly style the category labels with their chosen color)
+
+  posts Post[] @relation("PostCategories")
+}
+
+
+model ResourceType {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+
+  posts Post[] 
+}
+
+
+model AdminUser {
+  id           Int     @id @default(autoincrement())
+  username     String  @unique
+  passwordHash String
+}
