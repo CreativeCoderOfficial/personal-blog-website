@@ -15,7 +15,7 @@ interface BlogListProps {
 // You might want to fetch these from the DB later, but hardcoded is fine for now
 const CATEGORIES = ["Technology", "Productivity", "Planning", "Health", "Superpowered-Learning"];
 
-export default function BlogList({ initialPosts }: BlogListProps) {
+export default function BlogsContainer({ initialPosts }: BlogListProps) {
   // --- STATE ---
   // We initialize the list with the data passed from the Server Component
   const [posts, setPosts] = useState<BlogPost[]>(initialPosts);
@@ -114,7 +114,7 @@ export default function BlogList({ initialPosts }: BlogListProps) {
 
 
   return (
-    <div className="container w-full mx-auto px-6 lg:px-10 xl:px-16 2xl:px-24">
+    <>
       {/* We pass the setters to FilterPanel so it can update our state.
          Note: We removed date filtering for simplicity in this step.
       */}
@@ -168,6 +168,6 @@ export default function BlogList({ initialPosts }: BlogListProps) {
           You've reached the end of the list.
         </div>
       )}
-    </div>
+    </>
   );
 }
