@@ -6,11 +6,11 @@ interface FilterPanelProps {
   setSearchTerm: (term: string) => void;
   searchPlaceholder?: string; // Customizable placeholder
 
-  // --- DATE PROPS ---
+ /*  // --- DATE PROPS ---
   dateFrom: string;
   setDateFrom: (date: string) => void;
   dateTo: string;
-  setDateTo: (date: string) => void;
+  setDateTo: (date: string) => void; */
 
   // --- FILTER OPTION PROPS (Renamed from 'categories') ---
   filterOptions: string[]; 
@@ -23,10 +23,6 @@ export default function FilterPanel({
   searchTerm,
   setSearchTerm,
   searchPlaceholder = "Search...",
-  dateFrom,
-  setDateFrom,
-  dateTo,
-  setDateTo,
   filterOptions,
   selectedOptions,
   setSelectedOptions,
@@ -85,8 +81,7 @@ export default function FilterPanel({
         </div>
 
         {/* 2. DATE RANGE INPUTS */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          {/* From Date */}
+        {/*<div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1 group">
             <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                 <span className="text-xs text-text-secondary uppercase font-bold mr-2">From</span>
@@ -105,7 +100,6 @@ export default function FilterPanel({
             />
           </div>
 
-          {/* Until Date */}
           <div className="relative flex-1 group">
              <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                 <span className="text-xs text-text-secondary uppercase font-bold mr-2">Until</span>
@@ -123,7 +117,7 @@ export default function FilterPanel({
               "
             />
           </div>
-        </div>
+        </div>  */}
       </div>
 
       {/* BOTTOM ROW: Multi-Select Options */}
