@@ -32,10 +32,12 @@ export default function BlogsContainer({ initialPosts }: BlogListProps) {
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Filter State
+  // Filters 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+
   // Ref for the "Infinite Scroll" element at the bottom
   const isFirstRender = useRef(true);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -53,6 +55,8 @@ export default function BlogsContainer({ initialPosts }: BlogListProps) {
       
       if (searchTerm) params.set("search", searchTerm);
       if (selectedCategories.length > 0) params.set("categories", selectedCategories.join(","));
+      if (dateFrom) params.set("dateFrom", dateFrom);
+      if (dateTo) params.set("dateTo", dateTo);
 
       // 2. Make the request to our new Universal API Endpoint
       const response = await fetch(`/api/posts?${params.toString()}`);
@@ -76,7 +80,7 @@ export default function BlogsContainer({ initialPosts }: BlogListProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [searchTerm, selectedCategories]); // Re-create this function if filters change
+  }, [searchTerm, selectedCategories, dateFrom, dateTo]); // Re-create this function if filters change
 
   // --- EFFECT 1: Handle Filter Changes ---
   // Triggers when user types or selects a category
@@ -90,7 +94,7 @@ export default function BlogsContainer({ initialPosts }: BlogListProps) {
     setPage(1); // Reset page count
     setHasMore(true); // Assume there might be results
     fetchPosts(1, true); // Fetch page 1, isNewSearch = true
-  }, [searchTerm, selectedCategories, fetchPosts]);
+  }, [searchTerm, selectedCategories,dateFrom, dateTo, fetchPosts]);
 
 
   // --- EFFECT 2: Handle "Load More" (Infinite Scroll) ---
@@ -136,6 +140,10 @@ export default function BlogsContainer({ initialPosts }: BlogListProps) {
         setSelectedOptions={setSelectedCategories}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
+        dateFrom={dateFrom}
+        setDateFrom={setDateFrom}
+        dateTo={dateTo}
+        setDateTo={setDateTo}
       />
 
       <ContentGrid isEmpty={posts.length === 0}>

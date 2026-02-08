@@ -25,16 +25,19 @@ export async function GET(request: Request) {
     const isValidType = typeParam && Object.keys(PostType).includes(typeParam);
     const postType = isValidType ? (typeParam as PostType) : PostType.BLOG;
 
-    // We set defaults: Page 1, and 6 posts per page if not specified
+    // Default result set: Page 1, and 6 posts per page if not specified
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "6");
+
+    // Search filters:
     const search = searchParams.get("search") || "";
     const categoryParam = searchParams.get("categories"); // e.g., "tech,productivity"
+    const dateFromParam = searchParams.get("dateFrom");
+    const dateToParam = searchParams.get("dateTo");
 
     // 2. Calculate "Skip"
-    // If we are on page 1, we skip 0. If page 2, we skip the first 6.
+    // If we are on page 1, we skip 0. If page 2, we skip the first 6, etc...
     const skip = (page - 1) * limit;
-
 
     // 3. Build the Database Query Filters (The "Where" Clause)
     // We start with the base rules: Must be a BLOG and must be PUBLISHED.
@@ -66,6 +69,30 @@ export async function GET(request: Request) {
         },
       };
     }
+
+    // We check if EITHER dateFrom OR dateTo exists
+    if (dateFromParam || dateToParam) {
+      // We add a 'createdAt' filter to the whereClause
+      whereClause.createdAt = {};
+
+      // 1. Handle "From Date"
+      if (dateFromParam) {
+        // says that the createdAt must be greater than or equal to the dateFromParam
+        whereClause.createdAt.gte = new Date(dateFromParam);
+      }
+
+      // 2. Handle "To Date"
+      if (dateToParam) {
+        // We need to move the time to 23:59:59 to capture all posts made that day
+        // So the limit becomes midnight
+        const dateTo = new Date(dateToParam);
+        dateTo.setHours(23, 59, 59, 999); // Set to the very last millisecond of the day
+
+        // says that the createdAt must be less than or equal to the dateToParam
+        whereClause.createdAt.lte = dateTo;
+      }
+    }
+
 
 
     // 4. Execute the Query
