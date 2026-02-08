@@ -1,4 +1,4 @@
-// app/api/blogs/route.ts
+// app/api/posts/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma"; // Importing the singleton we created
 import { PostType, PostStatus } from "@prisma/client"; // Type-safe Enums from Prisma

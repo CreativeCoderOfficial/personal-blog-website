@@ -135,7 +135,7 @@ export default function FilterPanel({
                 key={opt}
                 onClick={() => toggleOption(opt)}
                 className={`
-                  px-4 py-2 rounded-full text-sm font-medium border transition-all duration-300
+                  px-4 py-2 rounded-full text-sm font-medium border transition-all duration-300 capitalize
                   ${isSelected 
                     ? "bg-accent-purple text-white border-accent-purple shadow-lg shadow-accent-purple/20" 
                     : "bg-main/50 text-text-secondary border-border-subtle hover:border-text-secondary hover:text-text-primary"

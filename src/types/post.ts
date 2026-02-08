@@ -1,6 +1,14 @@
 // types/post.ts
 import { PostType } from "@prisma/client";
 
+
+// Category type:
+export interface Category {
+  name: string;
+  color: string;
+}
+
+
 // 1. The Base Interface
 export interface BasePost {
   id: number;
@@ -12,8 +20,8 @@ export interface BasePost {
   createdAt: string; // We use string because we serialize Dates from the server
   updatedAt: string;
   
-  // Relations (Prisma returns these as arrays/objects)
-  categories: { name: string; color: string }[];
+  // Relations
+  categories: Category[];
 }
 
 // 2. The Blog Post Interface

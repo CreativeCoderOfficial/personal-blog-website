@@ -13,7 +13,14 @@ interface BlogListProps {
 }
 
 // You might want to fetch these from the DB later, but hardcoded is fine for now
-const CATEGORIES = ["Technology", "Productivity", "Planning", "Health", "Superpowered-Learning"];
+const CATEGORIES = [
+  "tech", 
+  "planning", 
+  "productivity", 
+  "health", 
+  "superpowered-learning", 
+  "elevating the mind"
+];
 
 export default function BlogsContainer({ initialPosts }: BlogListProps) {
   // --- STATE ---
@@ -30,6 +37,7 @@ export default function BlogsContainer({ initialPosts }: BlogListProps) {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   
   // Ref for the "Infinite Scroll" element at the bottom
+  const isFirstRender = useRef(true);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   // --- HELPER FUNCTION: Fetch Data ---
@@ -74,8 +82,10 @@ export default function BlogsContainer({ initialPosts }: BlogListProps) {
   // Triggers when user types or selects a category
   useEffect(() => {
     // Avoid double-fetching on initial load (since initialPosts are already there)
-    const isInitialLoad = page === 1 && searchTerm === "" && selectedCategories.length === 0;     // this is a boolean that checks this
-    if (isInitialLoad) return;
+    if (isFirstRender.current) {
+      isFirstRender.current = false; // Mark the first render as done
+      return; // avoid refetching
+    }
 
     setPage(1); // Reset page count
     setHasMore(true); // Assume there might be results
@@ -134,7 +144,7 @@ export default function BlogsContainer({ initialPosts }: BlogListProps) {
             key={post.id}
             title={post.title}
             summary={post.summary}
-            category={post.categories[0]?.name || "Uncategorized"} 
+            categories={post.categories} 
             thumbnailUrl={post.thumbnailUrl || ""} // Handle nullable
             date={post.createdAt} // This is already a string
             href={`/blogs/${post.slug}`}

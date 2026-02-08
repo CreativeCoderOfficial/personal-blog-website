@@ -1,30 +1,32 @@
 import Link from "next/link";
 import { ArrowRight, Calendar } from "lucide-react";
 import { ReactNode } from "react";
+// Import the shared type!
+import { Category } from "@/types/post"; 
 
 interface ContentCardProps {
   title: string;
   summary: string;
-  category: string;
+  // Use the shared type here
+  categories: Category[]; 
   thumbnailUrl: string;
   date: string;
-  href: string; // Used for the title link
+  href: string; 
   buttonText?: string; 
   metaItem?: ReactNode; 
-  // NEW: Slot to override the default footer button
   customFooter?: ReactNode;
 }
 
 export default function ContentCard({
   title,
   summary,
-  category,
+  categories = [], 
   thumbnailUrl,
   date,
   href,
   buttonText = "Read More",
   metaItem,
-  customFooter, // <--- NEW PROP
+  customFooter, 
 }: ContentCardProps) {
   
   const formattedDate = new Date(date).toLocaleDateString("en-US", {
@@ -38,20 +40,36 @@ export default function ContentCard({
       hover:border-accent-purple/50 hover:shadow-2xl hover:shadow-accent-purple/10
       transition-all duration-300
     ">
-      {/* THUMBNAIL */}
+      {/* THUMBNAIL AREA */}
       <div className="relative h-48 overflow-hidden">
         <img 
           src={thumbnailUrl} 
           alt={title} 
           className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
         />
-        <div className="absolute top-4 left-4">
-          <span className="
-            px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider
-            bg-main/90 backdrop-blur-md border border-accent-purple/30 text-accent-purple
-          ">
-            {category}
-          </span>
+        
+        {/* OVERLAY CATEGORIES */}
+        {/* We use flex-wrap so multiple tags sit nicely together */}
+        <div className="absolute top-4 left-4 flex flex-wrap gap-2 max-w-[90%]">
+          {categories.slice(0, 3).map((cat, index) => (
+            <span 
+              key={index}
+              className="
+                px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider
+                backdrop-blur-md border shadow-sm
+              "
+              style={{ 
+                // 1. Text is the full color
+                color: cat.color,
+                // 2. Border is the color with ~30% opacity (4D)
+                borderColor: `${cat.color}4D`, 
+                // 3. Background is the color with ~10% opacity (1A)
+                backgroundColor: `${cat.color}1A` 
+              }}
+            >
+              {cat.name}
+            </span>
+          ))}
         </div>
       </div>
 
@@ -79,7 +97,7 @@ export default function ContentCard({
           {summary}
         </p>
 
-        {/* Footer Area: Render Custom OR Default */}
+        {/* Footer Area */}
         <div className="pt-4 border-t border-border-subtle mt-auto">
           {customFooter ? (
             customFooter
