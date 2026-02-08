@@ -1,65 +1,69 @@
 import { Search, Filter, X, Calendar, RotateCcw } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
+import { PostFilters } from "@/types/post";
 
 interface FilterPanelProps {
-  // --- SEARCH PROPS ---
-  searchTerm: string;
-  setSearchTerm: Dispatch<SetStateAction<string>>;
-  searchPlaceholder?: string;
-  
-  // --- CATEGORY PROPS ---
-  filterLabel: string;
-  filterOptions: string[];
-  selectedOptions: string[];
-  setSelectedOptions: Dispatch<SetStateAction<string[]>>;
+  //  Use PostFilters props
+  filters: PostFilters;
+  setFilters: Dispatch<SetStateAction<PostFilters>>;
 
-  // --- DATE PROPS ---
-  dateFrom: string;
-  setDateFrom: Dispatch<SetStateAction<string>>;
-  dateTo: string;
-  setDateTo: Dispatch<SetStateAction<string>>;
+  // Config props 
+  searchPlaceholder?: string;
+  filterLabel?: string;
+  filterOptions: string[];
+  
+  // Optional: show/hide specific inputs
+  showResourceTypeInput?: boolean;
 }
 
 export default function FilterPanel({
-  searchTerm,
-  setSearchTerm,
+  filters,
+  setFilters,
   searchPlaceholder = "Search...",
   filterOptions,
-  selectedOptions,
-  setSelectedOptions,
   filterLabel = "Filter by Category",
-  dateFrom,
-  setDateFrom,
-  dateTo,
-  setDateTo,
+  showResourceTypeInput = false,
 }: FilterPanelProps) {
 
-  // --- LOGIC HELPERS ---
-  const hasSearch = searchTerm.length > 0;
-  const hasDates = dateFrom !== "" || dateTo !== "";
-  const hasCategories = selectedOptions.length > 0;
-  const hasAnyFilter = hasSearch || hasDates || hasCategories;
+// --- LOGIC HELPERS ---
+const hasSearch = filters.search.length > 0;
+const hasDates = filters.dateFrom !== "" || filters.dateTo !== "";
+const hasCategories = filters.categories.length > 0;
+const hasAnyFilter = hasSearch || hasDates || hasCategories;
 
-  // --- TOGGLE LOGIC ---
-  const toggleOption = (option: string) => {
-    if (selectedOptions.includes(option)) {
-      setSelectedOptions(selectedOptions.filter((o) => o !== option));
-    } else {
-      setSelectedOptions([...selectedOptions, option]);
-    }
-  };
+// --- UPDATE HELPERS (The "Internal Adapters") ---
+const updateSearch = (val: string) => {
+  setFilters(prev => ({ ...prev, search: val }));
+};
+
+const updateDate = (field: 'dateFrom' | 'dateTo', val: string) => {
+  setFilters(prev => ({ ...prev, [field]: val }));
+};
+
+const toggleCategory = (option: string) => {
+  setFilters(prev => {
+    const current = prev.categories;
+    const newCategories = current.includes(option)
+      ? current.filter(c => c !== option) // Remove
+      : [...current, option];             // Add
+    
+    return { ...prev, categories: newCategories };
+  });
+};
 
   // --- CLEAR HANDLERS ---
   const clearDates = () => {
-    setDateFrom("");
-    setDateTo("");
-  };
+      setFilters(prev => ({ ...prev, dateFrom: "", dateTo: "" }));
+    };
 
   const clearAll = () => {
-    setSearchTerm("");
-    setSelectedOptions([]);
-    setDateFrom("");
-    setDateTo("");
+    setFilters(prev => ({
+      search: "",
+      categories: [],
+      dateFrom: "",
+      dateTo: "",
+      resourceType: []
+    }));
   };
 
   return (
@@ -83,8 +87,8 @@ export default function FilterPanel({
           <input 
             type="text" 
             placeholder={searchPlaceholder}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={filters.search}
+            onChange={(e) => updateSearch(e.target.value)}
             className="
               w-full pl-12 pr-10 py-4
               bg-main/50 border border-border-subtle rounded-xl 
@@ -95,7 +99,7 @@ export default function FilterPanel({
           />
           {hasSearch && (
             <button 
-              onClick={() => setSearchTerm("")}
+              onClick={() => updateSearch("")}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors"
               title="Clear Search"
             >
@@ -114,8 +118,8 @@ export default function FilterPanel({
               </div>
               <input 
                 type="date" 
-                value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
+                value={filters.dateFrom}
+                onChange={(e) => updateDate('dateFrom', e.target.value)}
                 className="
                   w-full pl-16 pr-4 py-4
                   bg-main/50 border border-border-subtle rounded-xl 
@@ -132,8 +136,8 @@ export default function FilterPanel({
               </div>
               <input 
                 type="date" 
-                value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
+                value={filters.dateTo}
+                onChange={(e) => updateDate('dateTo', e.target.value)}
                 className="
                   w-full pl-16 pr-4 py-4
                   bg-main/50 border border-border-subtle rounded-xl 
@@ -171,11 +175,11 @@ export default function FilterPanel({
 
         <div className="flex flex-wrap gap-3">
           {filterOptions.map((opt) => {
-            const isSelected = selectedOptions.includes(opt);
+            const isSelected = filters.categories.includes(opt);
             return (
               <button
                 key={opt}
-                onClick={() => toggleOption(opt)}
+                onClick={() => toggleCategory(opt)}
                 className={`
                   px-4 py-2 rounded-full text-sm font-medium border transition-all duration-300 capitalize
                   ${isSelected 
@@ -192,7 +196,7 @@ export default function FilterPanel({
           {/* Clear Categories Button */}
           {hasCategories && (
             <button
-              onClick={() => setSelectedOptions([])}
+              onClick={() => setFilters(prev => ({ ...prev, categories: [] }))}
               className="
                 px-4 py-2 rounded-full text-sm font-medium 
                 text-red-400 hover:text-red-300 hover:bg-red-400/10 
