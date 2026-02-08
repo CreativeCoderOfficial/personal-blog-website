@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Loader2, Clock } from "lucide-react";
 // Adjust these imports to match your project structure
-import FilterPanel from "@/components/generic/FilterPanel"; 
+import FilterPanel from "@/components/posts/filtering/FilterPanel"; 
 import ContentGrid from "@/components/generic/ContentGrid";
 import ContentCard from "@/components/generic/ContentCard";
 import { BlogPost } from "@/types/post";

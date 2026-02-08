@@ -2,18 +2,17 @@
 
 import { usePostFetcher } from "@/hooks/usePostFetcher";
 import { ResourcePost } from "@/types/post"; // Import the specific type
-import FilterPanel from "@/components/generic/FilterPanel"; 
+import FilterPanel from "@/components/posts/filtering/FilterPanel"; 
 import ContentGrid from "@/components/generic/ContentGrid";
 import ContentCard from "@/components/generic/ContentCard";
 import { Loader2, Download, Layers } from "lucide-react";
 
-// Categories can be the same, or specific to resources. 
-// For now, we reuse the same global categories from your seed.
+// Categories can be the same or specific to resources. 
 const CATEGORIES = ["tech", "planning", "productivity", "health", "superpowered-learning"];
 
 interface ResourcesContainerProps {
-  initialPosts: ResourcePost[]; // Strictly typed as Resources
-  resourceTypes: string[];      // Passed from the server
+  initialPosts: ResourcePost[];
+  resourceTypes: string[];      
 }
 
 export default function ResourcesContainer({ initialPosts, resourceTypes }: ResourcesContainerProps) {
@@ -39,11 +38,10 @@ export default function ResourcesContainer({ initialPosts, resourceTypes }: Reso
         filterLabel="Filter by Topic"
         filterOptions={CATEGORIES}
         
-        // Resource Type Config (The New Part!)
+        // Resource Type Config 
         resourceTypeLabel="Filter by File Type"
         resourceTypeOptions={resourceTypes} // ["Video", "E-Book", etc.]
 
-        // Data Binding
         filters={filters}
         setFilters={setFilters}
       />
@@ -81,7 +79,7 @@ export default function ResourcesContainer({ initialPosts, resourceTypes }: Reso
         })}
       </ContentGrid>
 
-      {/* 4. INFINITE SCROLL SENTINEL (Standard) */}
+      {/* The Sentinel: A detailed loading state or invisible spacer */}
       {hasMore && (
         <div ref={sentinelRef} className="mt-16 flex justify-center items-center h-20">
           {isLoading ? (

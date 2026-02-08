@@ -1,6 +1,7 @@
 import { Search, Filter, X, Calendar, RotateCcw, Layers } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 import { PostFilters } from "@/types/post";
+import MultiPillFilter from "@/components/posts/filtering/MultiPillFilter"
 
 interface FilterPanelProps {
   //  Use PostFilters props
@@ -171,82 +172,30 @@ const updateDate = (field: 'dateFrom' | 'dateTo', val: string) => {
       </div>
 
       {/* Category Options */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm text-text-secondary font-medium">
-            <Filter className="w-4 h-4" />
-            <span>{filterLabel}:</span>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap gap-3">
-          {filterOptions.map((opt) => {
-            const isSelected = filters.categories.includes(opt);
-            return (
-              <button
-                key={opt}
-                onClick={() => toggleFilter('categories', opt)}
-                className={`
-                  px-4 py-2 rounded-full text-sm font-medium border transition-all duration-300 capitalize
-                  ${isSelected 
-                    ? "bg-accent-purple text-white border-accent-purple shadow-lg shadow-accent-purple/20" 
-                    : "bg-main/50 text-text-secondary border-border-subtle hover:border-text-secondary hover:text-text-primary"
-                  }
-                `}
-              >
-                {opt}
-              </button>
-            );
-          })}
-          
-          {/* Clear Categories Button */}
-          {hasCategories && (
-            <button
-              onClick={() => setFilters(prev => ({ ...prev, categories: [] }))}
-              className="
-                px-4 py-2 rounded-full text-sm font-medium 
-                text-red-400 hover:text-red-300 hover:bg-red-400/10 
-                flex items-center gap-1 transition-colors
-              "
-            >
-              <X className="w-3 h-3" />
-              Clear Categories
-            </button>
-          )}
-        </div>
-      </div>
+      <MultiPillFilter
+        label={filterLabel}
+        labelIcon={<Filter className="w-4 h-4" />}
+        options={filterOptions}
+        selected={filters.categories}
+        onToggle={(opt) => toggleFilter("categories", opt)}
+        onClear={() => setFilters((prev) => ({ ...prev, categories: [] }))}
+        clearLabel="Clear Categories"
+        selectedClass="bg-accent-purple text-white border-accent-purple shadow-lg shadow-accent-purple/20"
+       />
+      
       {/*  Resource Type row: (Only renders if options exist) */}
       {resourceTypeOptions.length > 0 && (
-        <div className="space-y-3 pt-4 border-t border-border-subtle/50">
-          <div className="flex items-center gap-2 text-sm text-text-secondary font-medium">
-            <Layers className="w-4 h-4" />
-            <span>{resourceTypeLabel}:</span>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            {resourceTypeOptions.map((opt) => {
-              const isSelected = filters.resourceType.includes(opt);
-              return (
-                <button
-                  key={opt}
-                  onClick={() => toggleFilter('resourceType', opt)}
-                  className={`
-                    px-4 py-2 rounded-full text-sm font-medium border transition-all capitalize
-                    ${isSelected 
-                      ? "bg-accent-orange text-white border-accent-orange" 
-                      : "bg-main/50 text-text-secondary border-border-subtle hover:border-text-secondary"
-                    }
-                  `}
-                >
-                  {opt}
-                </button>
-              );
-            })}
-            {hasResourceTypes && (
-              <button onClick={() => setFilters(prev => ({ ...prev, resourceType: [] }))} className="px-4 py-2 rounded-full text-sm font-medium text-red-400 flex items-center gap-1">
-                <X className="w-3 h-3" /> Clear
-              </button>
-            )}
-          </div>
+        <div className="pt-4 border-t border-border-subtle/50">
+         <MultiPillFilter
+          label={resourceTypeLabel}
+          labelIcon={<Layers className="w-4 h-4" />}
+          options={resourceTypeOptions}
+          selected={filters.resourceType}
+          onToggle={(opt) => toggleFilter("resourceType", opt)}
+          onClear={() => setFilters((prev) => ({ ...prev, resourceType: [] }))}
+          clearLabel="Clear"
+          selectedClass="bg-accent-orange text-white border-accent-orange"
+          />
         </div>
       )}
 
