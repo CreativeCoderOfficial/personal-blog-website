@@ -35,6 +35,10 @@ export async function GET(request: Request) {
     const dateFromParam = searchParams.get("dateFrom");
     const dateToParam = searchParams.get("dateTo");
 
+
+    // Variable params:
+    const resourceTypeParam = searchParams.get("resourceType"); // for resources
+
     // 2. Calculate "Skip"
     // If we are on page 1, we skip 0. If page 2, we skip the first 6, etc...
     const skip = (page - 1) * limit;
@@ -67,6 +71,17 @@ export async function GET(request: Request) {
         some: {
           name: { in: categories }, // Filter posts that have ANY of these categories
         },
+      };
+    }
+
+    // Filter on Resource Types
+    if (resourceTypeParam) {
+      const types = resourceTypeParam.split(",");
+      
+      // Prisma Logic:
+      // "Find posts where the related 'resourceType' has a 'name' that is IN our list"
+      whereClause.resourceType = {
+        name: { in: types }
       };
     }
 

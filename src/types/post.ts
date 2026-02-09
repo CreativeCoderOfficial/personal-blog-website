@@ -8,6 +8,13 @@ export interface Category {
   color: string;
 }
 
+export interface PostFilters {
+  search: string;
+  categories: string[];
+  dateFrom: string;
+  dateTo: string;
+  resourceType: string[];
+}
 
 // 1. The Base Interface
 export interface BasePost {

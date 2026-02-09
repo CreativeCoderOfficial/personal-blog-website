@@ -6,7 +6,7 @@ import Link from "next/link";
 
 // Components
 import AdminHeader from "@/components/admin/AdminHeader";
-import FilterPanel from "@/components/generic/FilterPanel";
+import FilterPanel from "@/components/posts/filtering/FilterPanel";
 import ContentGrid from "@/components/generic/ContentGrid";
 import ContentCard from "@/components/generic/ContentCard";
 

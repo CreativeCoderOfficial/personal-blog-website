@@ -1,65 +1,76 @@
-import { Search, Filter, X, Calendar, RotateCcw } from "lucide-react";
+import { Search, Filter, X, Calendar, RotateCcw, Layers } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
+import { PostFilters } from "@/types/post";
+import MultiPillFilter from "@/components/posts/filtering/MultiPillFilter"
 
 interface FilterPanelProps {
-  // --- SEARCH PROPS ---
-  searchTerm: string;
-  setSearchTerm: Dispatch<SetStateAction<string>>;
-  searchPlaceholder?: string;
-  
-  // --- CATEGORY PROPS ---
-  filterLabel: string;
-  filterOptions: string[];
-  selectedOptions: string[];
-  setSelectedOptions: Dispatch<SetStateAction<string[]>>;
+  //  Use PostFilters props
+  filters: PostFilters;
+  setFilters: Dispatch<SetStateAction<PostFilters>>;
 
-  // --- DATE PROPS ---
-  dateFrom: string;
-  setDateFrom: Dispatch<SetStateAction<string>>;
-  dateTo: string;
-  setDateTo: Dispatch<SetStateAction<string>>;
+  // Config props 
+  searchPlaceholder?: string;
+  filterLabel?: string;
+  filterOptions: string[];
+  
+  // show/hide specific optional inputs
+  resourceTypeLabel?: string;
+  resourceTypeOptions?: string[];
 }
 
 export default function FilterPanel({
-  searchTerm,
-  setSearchTerm,
+  filters,
+  setFilters,
   searchPlaceholder = "Search...",
   filterOptions,
-  selectedOptions,
-  setSelectedOptions,
   filterLabel = "Filter by Category",
-  dateFrom,
-  setDateFrom,
-  dateTo,
-  setDateTo,
+  resourceTypeOptions = [], 
+  resourceTypeLabel = "Filter by Type",
 }: FilterPanelProps) {
 
-  // --- LOGIC HELPERS ---
-  const hasSearch = searchTerm.length > 0;
-  const hasDates = dateFrom !== "" || dateTo !== "";
-  const hasCategories = selectedOptions.length > 0;
-  const hasAnyFilter = hasSearch || hasDates || hasCategories;
+// --- LOGIC HELPERS ---
+const hasSearch = filters.search.length > 0;
+const hasDates = filters.dateFrom !== "" || filters.dateTo !== "";
+const hasCategories = filters.categories.length > 0;
+const hasResourceTypes = filters.resourceType.length > 0;
+  
+// Check if ANY filter is active
+const hasAnyFilter = hasSearch || hasDates || hasCategories || hasResourceTypes;
 
-  // --- TOGGLE LOGIC ---
-  const toggleOption = (option: string) => {
-    if (selectedOptions.includes(option)) {
-      setSelectedOptions(selectedOptions.filter((o) => o !== option));
-    } else {
-      setSelectedOptions([...selectedOptions, option]);
-    }
+// --- UPDATE HELPERS (The "Internal Adapters") ---
+const updateSearch = (val: string) => {
+  setFilters(prev => ({ ...prev, search: val }));
+};
+
+const updateDate = (field: 'dateFrom' | 'dateTo', val: string) => {
+  setFilters(prev => ({ ...prev, [field]: val }));
+};
+
+// Generic toggle function for both Categories and Resource Types
+  const toggleFilter = (field: 'categories' | 'resourceType', option: string) => {
+    setFilters(prev => {
+      const current = prev[field];
+      const newList = current.includes(option)
+        ? current.filter(c => c !== option) // Remove
+        : [...current, option];             // Add
+      
+      return { ...prev, [field]: newList };
+    });
   };
-
+  
   // --- CLEAR HANDLERS ---
   const clearDates = () => {
-    setDateFrom("");
-    setDateTo("");
-  };
+      setFilters(prev => ({ ...prev, dateFrom: "", dateTo: "" }));
+    };
 
   const clearAll = () => {
-    setSearchTerm("");
-    setSelectedOptions([]);
-    setDateFrom("");
-    setDateTo("");
+    setFilters(prev => ({
+      search: "",
+      categories: [],
+      dateFrom: "",
+      dateTo: "",
+      resourceType: []
+    }));
   };
 
   return (
@@ -83,8 +94,8 @@ export default function FilterPanel({
           <input 
             type="text" 
             placeholder={searchPlaceholder}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={filters.search}
+            onChange={(e) => updateSearch(e.target.value)}
             className="
               w-full pl-12 pr-10 py-4
               bg-main/50 border border-border-subtle rounded-xl 
@@ -95,7 +106,7 @@ export default function FilterPanel({
           />
           {hasSearch && (
             <button 
-              onClick={() => setSearchTerm("")}
+              onClick={() => updateSearch("")}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors"
               title="Clear Search"
             >
@@ -114,8 +125,8 @@ export default function FilterPanel({
               </div>
               <input 
                 type="date" 
-                value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
+                value={filters.dateFrom}
+                onChange={(e) => updateDate('dateFrom', e.target.value)}
                 className="
                   w-full pl-16 pr-4 py-4
                   bg-main/50 border border-border-subtle rounded-xl 
@@ -132,8 +143,8 @@ export default function FilterPanel({
               </div>
               <input 
                 type="date" 
-                value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
+                value={filters.dateTo}
+                onChange={(e) => updateDate('dateTo', e.target.value)}
                 className="
                   w-full pl-16 pr-4 py-4
                   bg-main/50 border border-border-subtle rounded-xl 
@@ -160,52 +171,35 @@ export default function FilterPanel({
         </div>
       </div>
 
-      {/* BOTTOM ROW: Category Options */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm text-text-secondary font-medium">
-            <Filter className="w-4 h-4" />
-            <span>{filterLabel}:</span>
-          </div>
+      {/* Category Options */}
+      <MultiPillFilter
+        label={filterLabel}
+        labelIcon={<Filter className="w-4 h-4" />}
+        options={filterOptions}
+        selected={filters.categories}
+        onToggle={(opt) => toggleFilter("categories", opt)}
+        onClear={() => setFilters((prev) => ({ ...prev, categories: [] }))}
+        clearLabel="Clear Categories"
+        selectedClass="bg-accent-purple text-white border-accent-purple shadow-lg shadow-accent-purple/20"
+       />
+      
+      {/*  Resource Type row: (Only renders if options exist) */}
+      {resourceTypeOptions.length > 0 && (
+        <div className="pt-4 border-t border-border-subtle/50">
+         <MultiPillFilter
+          label={resourceTypeLabel}
+          labelIcon={<Layers className="w-4 h-4" />}
+          options={resourceTypeOptions}
+          selected={filters.resourceType}
+          onToggle={(opt) => toggleFilter("resourceType", opt)}
+          onClear={() => setFilters((prev) => ({ ...prev, resourceType: [] }))}
+          clearLabel="Clear"
+          selectedClass="bg-accent-orange text-white border-accent-orange"
+          />
         </div>
+      )}
 
-        <div className="flex flex-wrap gap-3">
-          {filterOptions.map((opt) => {
-            const isSelected = selectedOptions.includes(opt);
-            return (
-              <button
-                key={opt}
-                onClick={() => toggleOption(opt)}
-                className={`
-                  px-4 py-2 rounded-full text-sm font-medium border transition-all duration-300 capitalize
-                  ${isSelected 
-                    ? "bg-accent-purple text-white border-accent-purple shadow-lg shadow-accent-purple/20" 
-                    : "bg-main/50 text-text-secondary border-border-subtle hover:border-text-secondary hover:text-text-primary"
-                  }
-                `}
-              >
-                {opt}
-              </button>
-            );
-          })}
-          
-          {/* Clear Categories Button */}
-          {hasCategories && (
-            <button
-              onClick={() => setSelectedOptions([])}
-              className="
-                px-4 py-2 rounded-full text-sm font-medium 
-                text-red-400 hover:text-red-300 hover:bg-red-400/10 
-                flex items-center gap-1 transition-colors
-              "
-            >
-              <X className="w-3 h-3" />
-              Clear Categories
-            </button>
-          )}
-        </div>
-      </div>
-
+        
       {/* A Clear All Option pops up if any filter is active */}
       {hasAnyFilter && (
         <div className="pt-6 border-t border-border-subtle flex justify-end">
