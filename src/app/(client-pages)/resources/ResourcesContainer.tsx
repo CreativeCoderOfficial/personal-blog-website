@@ -3,8 +3,8 @@
 import { usePostFetcher } from "@/hooks/usePostFetcher";
 import { ResourcePost } from "@/types/post"; // Import the specific type
 import FilterPanel from "@/components/posts/filtering/FilterPanel"; 
-import ContentGrid from "@/components/generic/ContentGrid";
-import ContentCard from "@/components/generic/ContentCard";
+import ContentGrid from "@/components/posts/filtering/ContentGrid";
+import ContentCard from "@/components/posts/filtering/ContentCard";
 import { Loader2, Download, Layers } from "lucide-react";
 
 // Categories can be the same or specific to resources. 

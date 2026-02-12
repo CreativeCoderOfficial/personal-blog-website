@@ -7,8 +7,8 @@ import Link from "next/link";
 // Components
 import AdminHeader from "@/components/admin/AdminHeader";
 import FilterPanel from "@/components/posts/filtering/FilterPanel";
-import ContentGrid from "@/components/generic/ContentGrid";
-import ContentCard from "@/components/generic/ContentCard";
+import ContentGrid from "@/components/posts/filtering/ContentGrid";
+import ContentCard from "@/components/posts/filtering/ContentCard";
 
 // --- MOCK MIXED DATA ---
 const MOCK_CONTENT = Array.from({ length: 12 }).map((_, i) => {

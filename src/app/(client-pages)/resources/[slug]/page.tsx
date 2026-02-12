@@ -8,62 +8,62 @@ import Image from "next/image";
 import PostHeader from "@/components/posts/specific/PostHeader";
 import SummaryBox from "@/components/posts/specific/SummaryBox";
 import DonateBox from "@/components/posts/specific/DonateBox";
+import ResourceActionBox from "@/components/posts/specific/ResourceActionBox";
 
-// Rerender the Server-side component every week (should be okay, since once posted, the post won't change normally )
-export const revalidate = 7 * 24 * 60 * 60; 
-// Next.js 15 introduced a change where dynamic route params are now passed as Promises to support async data fetching at the page level.
-// This means that instead of receiving `params` as a plain object, we now receive it as a Promise that resolves to the params object.
+
+// --- CONFIGURATION ---
+export const revalidate = 3600; 
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-// This function generates the static paths for all blog posts based on their slugs. 
-// Next.js will use this to pre-render pages at build time.
+// --- 1. STATIC GENERATION ---
 export async function generateStaticParams() {
-  const posts = await prisma.post.findMany({
-    where: { status: "PUBLISHED" },
+  const resources = await prisma.post.findMany({
+    where: { 
+      status: "PUBLISHED",
+      type: "RESOURCE" 
+    },
     select: { slug: true },
   });
-  return posts.map((post) => ({ slug: post.slug }));
+  return resources.map((post) => ({ slug: post.slug }));
 }
 
-// We need to generate this seperately since metadata is in the <head>
-// and so when generating the BlogPage, we don't have access to the post data yet.
-// Next.js needs to determine the Title/Description before it starts streaming the Body content.
+// --- 2. METADATA ---
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const post = await prisma.post.findUnique({
     where: { slug },
     select: { title: true, summary: true },
   });
-  if (!post) return { title: "Post Not Found" };
+  if (!post) return { title: "Resource Not Found" };
   
   return {
-    title: `${post.title} | My Blog`,
+    title: `${post.title} | My Resources`,
     description: post.summary,
   };
 }
 
-// Builds the single blog post page. The `slug` is now accessed by awaiting the `params` Promise.
-export default async function SingleBlogPage({ params }: PageProps) {
-  // Slug is now a Promise
+// --- 3. THE PAGE COMPONENT ---
+export default async function SingleResourcePage({ params }: PageProps) {
   const { slug } = await params;
 
-  // Fetch Data
   const post = await prisma.post.findUnique({
     where: { slug },
     include: {
       categories: true,
+      resourceType: true,
       sections: {
-        orderBy: { order: "asc" }, // Keep sections in correct reading order
+        orderBy: { order: "asc" },
       },
     },
   });
 
-  if (!post) notFound(); // If no post is found, trigger a 404 page
+  if (!post) notFound();
 
-  // Data Prep
-  const categoryList = post.categories.map(c => c.name); 
+  // Prepare Categories (Just the categories, NO merging with ResourceType)
+  const categoryList = post.categories.map(c => c.name);
 
   return (
     <main className="min-h-screen bg-main pt-8 pb-24">
@@ -76,40 +76,43 @@ export default async function SingleBlogPage({ params }: PageProps) {
             {/* 1. Header */}
             <PostHeader 
               title={post.title}
-              // If your component expects objects, remove .map() above and pass post.categories
               categories={categoryList} 
               createdAt={post.createdAt.toISOString()}
               thumbnailUrl={post.thumbnailUrl || ""}
             />
 
-            {/* 2. Mobile Summary (Visible only on small screens) */}
-            <div className="block lg:hidden mb-10">
+            {/* 2. Mobile Actions (Small Screens Only) */}
+            <div className="block lg:hidden mb-10 space-y-8">
+              <ResourceActionBox 
+                resourceLink={post.resourceLink}
+                resourceType={post.resourceType?.name || null}
+                resourceCost={post.resourceCost}
+                resourceRating={post.resourceRating}
+              />
+              
               <SummaryBox 
                 summary={post.summary}
                 takeaways={post.keyTakeaways}
-                readingTime={post.readingTime} 
+                readingTime={post.readingTime} // 👈 Correct attribute
               />
             </div>
 
-            {/* 3. The Content (Replacing ContentRenderer with Markdown Logic) */}
+            {/* 3. The Content (Markdown) */}
             <div className="space-y-12 mt-8">
               {post.sections.map((section) => (
                 <div key={section.id} className="group">
-                  
-                  {/* Section Title */}
                   {section.title && (
                     <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-6 mt-12">
                       {section.title}
                     </h2>
                   )}
 
-                  {/* Section Image */}
                   {section.imageUrl && (
                     <figure className="my-8">
                       <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden border border-border-subtle">
                         <Image 
                           src={section.imageUrl} 
-                          alt={section.imageDescription || "Illustration"}
+                          alt={section.imageDescription || "Resource Preview"}
                           fill
                           className="object-cover"
                         />
@@ -122,7 +125,6 @@ export default async function SingleBlogPage({ params }: PageProps) {
                     </figure>
                   )}
 
-                  {/* Markdown Content */}
                   {section.content && (
                     <div className="
                       prose prose-lg prose-invert max-w-none
@@ -140,8 +142,8 @@ export default async function SingleBlogPage({ params }: PageProps) {
               ))}
             </div>
 
-            {/* 4. Mobile Donate (Visible only on small screens) */}
-            <div className="block lg:hidden mt-12">
+             {/* 4. Mobile Donate */}
+             <div className="block lg:hidden mt-12">
               <DonateBox />
             </div>
           </div>
@@ -149,14 +151,23 @@ export default async function SingleBlogPage({ params }: PageProps) {
           {/* --- RIGHT COLUMN (Sticky Sidebar) --- */}
           <div className="hidden lg:block lg:col-span-4">
             <div className="sticky top-32 flex flex-col gap-6 mt-20">
-              {/* Sticky Summary */}
+              
+              {/* 1. The New Resource Box */}
+              <ResourceActionBox 
+                resourceLink={post.resourceLink}
+                resourceType={post.resourceType?.name || null}
+                resourceCost={post.resourceCost}
+                resourceRating={post.resourceRating}
+              />
+
+              {/* 2. Summary */}
               <SummaryBox 
                 summary={post.summary}
                 takeaways={post.keyTakeaways}
-                readingTime={post.readingTime}
+                readingTime={post.readingTime} // 👈 Correct attribute
               />
               
-              {/* Sticky Donate */}
+              {/* 3. Donate */}
               <DonateBox />
             </div>
           </div>
