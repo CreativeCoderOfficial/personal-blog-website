@@ -5,7 +5,9 @@ import ReactMarkdown from "react-markdown";
 import Image from "next/image";
 
 // --- CUSTOM COMPONENTS ---
+import PostLayout from "@/components/posts/specific/PostLayout";
 import PostHeader from "@/components/posts/specific/PostHeader";
+import ContentRenderer from "@/components/posts/specific/ContentRenderer";
 import SummaryBox from "@/components/posts/specific/SummaryBox";
 import DonateBox from "@/components/posts/specific/DonateBox";
 
@@ -63,106 +65,33 @@ export default async function SingleBlogPage({ params }: PageProps) {
   if (!post) notFound(); // If no post is found, trigger a 404 page
 
   // Data Prep
-  const categoryList = post.categories.map(c => c.name); 
+  const categoryNames = post.categories.map(c => c.name); 
+// Reusable Sidebar Component
+  const SidebarContent = (
+    <SummaryBox 
+      summary={post.summary}
+      takeaways={post.keyTakeaways}
+      readingTime={post.readingTime}
+    />
+  );
 
   return (
-    <main className="min-h-screen bg-main pt-8 pb-24">
-      <article className="container max-w-7xl mx-auto px-6 lg:px-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          
-          {/* --- LEFT COLUMN (Main Content) --- */}
-          <div className="lg:col-span-8">
-            
-            {/* 1. Header */}
-            <PostHeader 
-              title={post.title}
-              // If your component expects objects, remove .map() above and pass post.categories
-              categories={categoryList} 
-              createdAt={post.createdAt.toISOString()}
-              thumbnailUrl={post.thumbnailUrl || ""}
-            />
-
-            {/* 2. Mobile Summary (Visible only on small screens) */}
-            <div className="block lg:hidden mb-10">
-              <SummaryBox 
-                summary={post.summary}
-                takeaways={post.keyTakeaways}
-                readingTime={post.readingTime} 
-              />
-            </div>
-
-            {/* 3. The Content (Replacing ContentRenderer with Markdown Logic) */}
-            <div className="space-y-12 mt-8">
-              {post.sections.map((section) => (
-                <div key={section.id} className="group">
-                  
-                  {/* Section Title */}
-                  {section.title && (
-                    <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-6 mt-12">
-                      {section.title}
-                    </h2>
-                  )}
-
-                  {/* Section Image */}
-                  {section.imageUrl && (
-                    <figure className="my-8">
-                      <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden border border-border-subtle">
-                        <Image 
-                          src={section.imageUrl} 
-                          alt={section.imageDescription || "Illustration"}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      {section.imageDescription && (
-                        <figcaption className="text-center text-xs text-text-secondary mt-3 italic">
-                          {section.imageDescription}
-                        </figcaption>
-                      )}
-                    </figure>
-                  )}
-
-                  {/* Markdown Content */}
-                  {section.content && (
-                    <div className="
-                      prose prose-lg prose-invert max-w-none
-                      prose-headings:text-text-primary prose-headings:font-bold
-                      prose-p:text-text-secondary prose-p:leading-relaxed
-                      prose-a:text-accent-purple prose-a:no-underline hover:prose-a:underline
-                      prose-strong:text-text-primary
-                      prose-li:text-text-secondary
-                      prose-code:text-accent-orange prose-code:bg-accent-orange/10 prose-code:px-1 prose-code:rounded
-                    ">
-                      <ReactMarkdown>{section.content}</ReactMarkdown>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* 4. Mobile Donate (Visible only on small screens) */}
-            <div className="block lg:hidden mt-12">
-              <DonateBox />
-            </div>
-          </div>
-
-          {/* --- RIGHT COLUMN (Sticky Sidebar) --- */}
-          <div className="hidden lg:block lg:col-span-4">
-            <div className="sticky top-32 flex flex-col gap-6 mt-20">
-              {/* Sticky Summary */}
-              <SummaryBox 
-                summary={post.summary}
-                takeaways={post.keyTakeaways}
-                readingTime={post.readingTime}
-              />
-              
-              {/* Sticky Donate */}
-              <DonateBox />
-            </div>
-          </div>
-
-        </div>
-      </article>
-    </main>
+    <PostLayout
+      // Slot 1: Header
+      header={
+        <PostHeader 
+          title={post.title}
+          categories={categoryNames}
+          createdAt={post.createdAt.toISOString()}
+          thumbnailUrl={post.thumbnailUrl || ""}
+        />
+      }
+      // Slot 2: Mobile Top (Just summary for blogs)
+      mobileTopContent={SidebarContent}
+      // Slot 3: Desktop Sidebar (Same summary)
+      sidebar={SidebarContent}
+      // Slot 4: Main Content
+      content={<ContentRenderer sections={post.sections} />}
+    />
   );
 }
