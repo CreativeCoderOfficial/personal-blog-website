@@ -1,33 +1,42 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+// src/proxy.ts
+//
+// This is the route protection layer for the entire app.
+// It runs on the server BEFORE any page renders, on every matching request.
+//
+// Logic:
+//   - /admin/* without a valid session → redirect to /login
+//   - /login  with    a valid session → redirect to /admin (already logged in)
+//   - everything else → pass through untouched (public blog stays open)
 
-// 1. The Bouncer Logic
-export function proxy(request: NextRequest) {
-  // A. Look for a VIP wristband (a specific cookie)
-  // Note: We will actually create the login system that sets this cookie later!
-  const authToken = request.cookies.get('admin_session');
+import { auth } from "@/lib/auth";
+import { NextResponse } from "next/server";
 
-  // B. If there is NO token, they are not logged in.
-  if (!authToken) {
-    // We create a URL that points to your home page (or a login page if you make one)
-    const loginUrl = new URL('/login', request.url);
-    
-    // Redirect them to that page immediately
-    return NextResponse.redirect(loginUrl);
+export default auth((req) => {
+  const { nextUrl, auth: session } = req;
+  const isLoggedIn = !!session;
+  const isAdminRoute = nextUrl.pathname.startsWith("/admin");
+  const isLoginPage = nextUrl.pathname === "/login";
+
+  // Trying to access admin without being logged in → send to login
+  if (isAdminRoute && !isLoggedIn) {
+    return NextResponse.redirect(new URL("/login", nextUrl));
   }
 
-  // C. If they DO have the token, let them pass through normally
-  return NextResponse.next();
-}
+  // Already logged in but visiting /login → send to admin dashboard
+  if (isLoginPage && isLoggedIn) {
+    return NextResponse.redirect(new URL("/admin", nextUrl));
+  }
 
-// 2. The Guest List (Matcher)
+  // Everything else: let the request through normally
+  return NextResponse.next();
+});
+
+// Tell Next.js which routes this proxy runs on.
+// We explicitly exclude static files, images, and Next.js internals
+// so they are never accidentally blocked.
 export const config = {
   matcher: [
-    /*
-     * Match all request paths that start with /admin
-     * The /:path* means it applies to /admin AND everything inside it
-     * like /admin/dashboard, /admin/posts/new, etc.
-     */
-    '/admin/:path*'
+    "/admin/:path*",
+    "/login",
   ],
 };

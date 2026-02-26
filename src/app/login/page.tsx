@@ -1,12 +1,25 @@
+// src/app/admin/page.tsx
+//
+// On submit, we call NextAuth's signIn() with the "credentials" provider.
+// NextAuth internally:
+//   1. Sends the credentials to /api/auth/signin (with a valid CSRF token automatically)
+//   2. Runs the authorize() function in auth.ts
+//   3. On success: creates a signed JWT cookie and redirects to /admin
+//   4. On failure: redirects back here with ?error=CredentialsSignin in the URL
+
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, User, ArrowRight, AlertCircle, Loader2 } from "lucide-react";
-import Link from "next/link";
-import { loginAction } from "@/actions/auth"; // 1. Import the Server Action
+import { signIn } from "next-auth/react";
 
-export default function LoginPage() { // Renamed component
+//  we import from "next-auth/react" (not "@/lib/auth") for client components.
+//   "next-auth/react" provides the browser-side version of signIn that
+//   communicates with the API route 
+
+import { Lock, User, ArrowRight, AlertCircle, Loader2 } from "lucide-react";
+
+export default function AdminLoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -18,33 +31,48 @@ export default function LoginPage() { // Renamed component
     setIsLoading(true);
     setError("");
 
-    // 2. Call the Server Action with the state values
-    const result = await loginAction({ username, password });
+    // signIn() sends credentials to NextAuth's /api/auth/signin endpoint.
+    // "redirect: false" means we handle the result ourselves instead of
+    // letting NextAuth do a full page redirect — this gives us control
+    // to show an error message if login fails.
+    const result = await signIn("credentials", {
+      username,
+      password,
+      redirect: false,
+    });
 
-    if (result.success) {
-      // 3. Redirect to the protected dashboard if the cookie was set successfully
-      router.push("/admin/dashboard");
-    } else {
-      // 4. Display the error returned from the server
-      setError(result.error || "Login failed");
+    // In NextAuth v5, check result.ok explicitly rather than just result.error
+    if (!result?.ok) {
+      setError("Invalid credentials. Access denied.");
       setIsLoading(false);
+      return;
     }
+    // if (result?.error) {
+    //   // NextAuth returns a generic error string — we show our own message
+    //   // to avoid leaking any specifics about why login failed
+    //   setError("Invalid credentials. Access denied.");
+    //   setIsLoading(false);
+    //   return;
+    // }
+
+    // Success — manually redirect to the dashboard
+    router.push("/admin");
   };
 
   return (
     <main className="min-h-screen bg-main flex items-center justify-center p-6 relative overflow-hidden">
-      
+
       {/* Background Decor */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-accent-purple/20 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="w-full max-w-md relative z-10">
-        
+
         {/* Card */}
         <div className="
-          bg-card/50 backdrop-blur-xl border border-border-subtle 
+          bg-card/50 backdrop-blur-xl border border-border-subtle
           p-8 md:p-10 rounded-3xl shadow-2xl
         ">
-          
+
           {/* Header */}
           <div className="text-center mb-10">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-accent-orange/10 text-accent-orange mb-6">
@@ -56,27 +84,22 @@ export default function LoginPage() { // Renamed component
 
           {/* Form */}
           <form onSubmit={handleLogin} className="space-y-6">
-            
+
             {/* Username Input */}
             <div className="space-y-2">
               <label className="text-xs font-bold uppercase tracking-wider text-text-secondary">
                 Username
               </label>
-              <div className="relative group">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary group-focus-within:text-accent-purple transition-colors" />
-                <input 
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
+                <input
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="
-                    w-full pl-12 pr-4 py-3.5
-                    bg-main/50 border border-border-subtle rounded-xl 
-                    text-text-primary placeholder:text-text-secondary/50
-                    focus:outline-none focus:border-accent-purple focus:ring-1 focus:ring-accent-purple
-                    transition-all
-                  "
+                  className="w-full bg-white/5 border border-border-subtle rounded-xl pl-11 pr-4 py-3 text-text-primary placeholder:text-text-secondary/50 focus:outline-none focus:border-accent-purple/50 transition-colors"
                   placeholder="Enter username"
                   required
+                  autoComplete="username"
                 />
               </div>
             </div>
@@ -86,68 +109,48 @@ export default function LoginPage() { // Renamed component
               <label className="text-xs font-bold uppercase tracking-wider text-text-secondary">
                 Password
               </label>
-              <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary group-focus-within:text-accent-purple transition-colors" />
-                <input 
-                  type="password" 
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
+                <input
+                  type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="
-                    w-full pl-12 pr-4 py-3.5
-                    bg-main/50 border border-border-subtle rounded-xl 
-                    text-text-primary placeholder:text-text-secondary/50
-                    focus:outline-none focus:border-accent-purple focus:ring-1 focus:ring-accent-purple
-                    transition-all
-                  "
+                  className="w-full bg-white/5 border border-border-subtle rounded-xl pl-11 pr-4 py-3 text-text-primary placeholder:text-text-secondary/50 focus:outline-none focus:border-accent-purple/50 transition-colors"
                   placeholder="Enter password"
                   required
+                  autoComplete="current-password"
                 />
               </div>
             </div>
 
             {/* Error Message */}
             {error && (
-              <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-                <AlertCircle className="w-4 h-4" />
-                <span>{error}</span>
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span className="text-sm">{error}</span>
               </div>
             )}
 
             {/* Submit Button */}
-            <button 
+            <button
               type="submit"
               disabled={isLoading}
-              className="
-                w-full py-4 rounded-xl font-bold text-lg
-                bg-gradient-to-r from-accent-purple to-purple-600
-                text-white shadow-lg shadow-purple-500/20
-                hover:scale-[1.02] active:scale-[0.98]
-                disabled:opacity-70 disabled:cursor-not-allowed
-                transition-all duration-300
-                flex items-center justify-center gap-2
-              "
+              className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-accent-orange hover:bg-accent-orange/90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all"
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Authenticating...
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Verifying...
                 </>
               ) : (
                 <>
                   Access Dashboard
-                  <ArrowRight className="w-5 h-5" />
+                  <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </button>
+
           </form>
-
-          {/* Footer Link */}
-          <div className="mt-8 text-center">
-            <Link href="/" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
-              ← Return to Website
-            </Link>
-          </div>
-
         </div>
       </div>
     </main>

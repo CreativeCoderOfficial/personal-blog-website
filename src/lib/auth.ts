@@ -46,7 +46,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const user = await prisma.adminUser.findUnique({
           where: { username: credentials.username as string },
         });
-
+        
         // If no user found, reject
         if (!user) return null;
 
