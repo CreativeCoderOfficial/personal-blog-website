@@ -33,10 +33,10 @@ export default function CreatePostPage() {
   return (
     <main className="min-h-screen bg-main text-text-primary p-6 md:p-12 pb-32">
       
-      {/* 1. NAVIGATION: Fixed Link to Dashboard */}
+      {/* 1. NAVIGATION */}
       <div className="max-w-5xl mx-auto mb-10 flex items-center justify-between">
         <Link 
-          href="/admin/dashboard"  // <--- FIXED: Now points to Admin Dashboard
+          href="/admin" 
           className="flex items-center gap-2 text-text-secondary hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />

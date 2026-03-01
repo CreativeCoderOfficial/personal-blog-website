@@ -36,7 +36,7 @@ export default function CreatePostPage() {
       {/* 1. NAVIGATION: Link to Dashboard */}
       <div className="max-w-5xl mx-auto mb-10 flex items-center justify-between">
         <Link 
-          href="/admin/dashboard" 
+          href="/admin" 
           className="flex items-center gap-2 text-text-secondary hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
