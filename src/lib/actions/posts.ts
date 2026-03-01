@@ -171,12 +171,15 @@ export async function createPost(data: CreatePostData): Promise<ActionResult> {
       },
     });
 
-    // 8. Revalidate the cached pages that display posts.
-    // Next.js caches pages aggressively. After creating a post,
-    // we need to tell Next.js to regenerate these pages so the
-    // new post actually shows up without a server restart.
-    revalidatePath("/blogs");
-    revalidatePath("/resources");
+    // Step 8: Revalidate only what's necessary.
+    // We only revalidate the public list page if the post is published —
+    // a draft won't appear there anyway.
+    if (status === "PUBLISHED") {
+      revalidatePath(type === "BLOG" ? "/blogs" : "/resources");
+      revalidatePath(
+        `/${type === "BLOG" ? "blogs" : "resources"}/${post.slug}`
+      );
+    }
     revalidatePath("/admin");
 
     return { success: true, slug: post.slug };
