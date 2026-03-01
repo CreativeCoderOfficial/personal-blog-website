@@ -64,7 +64,7 @@ export const createPostSchema = z.object({
 
   // --- Category ---
 
-  categories: z.string().optional(),
+  categories: z.array(z.string()).default([]),
   // Comma-separated string from the form e.g. "tech, productivity"
   // We'll split and process this in the Server Action
 

@@ -1,13 +1,29 @@
 // src/components/admin/MetadataPanel.tsx
+//
+// Receives categoryOptions and resourceTypeOptions from CreatePostForm,
+// which got them from the Server Component page.tsx.
+// Passes them into the two new selector components.
+
 import { Layout, Image as ImageIcon, DollarSign, Star, Link as LinkIcon } from "lucide-react";
+import CategorySelector from "@/components/admin/CategorySelector";
+import ResourceTypeSelector from "@/components/admin/ResourceTypeSelector";
+import type { CategoryOption, ResourceTypeOption } from "@/components/admin/CreatePostForm";
 
 interface MetadataPanelProps {
   postType: "blog" | "resource";
   formData: any;
   setFormData: (data: any) => void;
+  categoryOptions: CategoryOption[];
+  resourceTypeOptions: ResourceTypeOption[];
 }
 
-export default function MetadataPanel({ postType, formData, setFormData }: MetadataPanelProps) {
+export default function MetadataPanel({
+  postType,
+  formData,
+  setFormData,
+  categoryOptions,
+  resourceTypeOptions,
+}: MetadataPanelProps) {
 
   const handleChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value });
@@ -33,16 +49,16 @@ export default function MetadataPanel({ postType, formData, setFormData }: Metad
       </div>
 
       {/* Categories */}
-      <div className="space-y-1">
-        <label className="text-xs text-text-secondary font-semibold">
-          Categories (comma separated)
-        </label>
-        <input
-          type="text"
-          value={formData.categories}
-          onChange={(e) => handleChange("categories", e.target.value)}
-          placeholder="Tech, Productivity..."
-          className="w-full bg-main border border-border-subtle rounded-lg px-3 py-2 text-sm focus:border-accent-purple outline-none"
+      <div className="space-y-2">
+        <label className="text-xs text-text-secondary font-semibold">Categories</label>
+        <CategorySelector
+          options={categoryOptions}
+          // formData.categories is now a string[] — CategorySelector
+          // reads and writes it directly via selected / onChange
+          selected={formData.categories}
+          onChange={(value) =>
+            setFormData({ ...formData, categories: value })
+          }
         />
       </div>
 
@@ -79,8 +95,6 @@ export default function MetadataPanel({ postType, formData, setFormData }: Metad
       {/* Status */}
       <div className="space-y-1">
         <label className="text-xs text-text-secondary font-semibold">Status</label>
-        {/* A select gives the admin a clear choice between saving as draft
-            or publishing immediately */}
         <select
           value={formData.status}
           onChange={(e) => handleChange("status", e.target.value)}
@@ -91,28 +105,33 @@ export default function MetadataPanel({ postType, formData, setFormData }: Metad
         </select>
       </div>
 
-      {/* Resource-only fields — only rendered when postType is "resource" */}
+      {/* Resource-only fields */}
       {postType === "resource" && (
         <div className="space-y-4 pt-4 border-t border-border-subtle">
           <label className="text-xs text-accent-orange font-bold uppercase">
             Resource Details
           </label>
 
-          {/* Resource Type — maps to ResourceType model via connectOrCreate */}
-          <div className="space-y-1">
-            <label className="text-xs text-text-secondary font-semibold">Resource Type</label>
-            <input
-              type="text"
-              value={formData.resourceType}
-              onChange={(e) => handleChange("resourceType", e.target.value)}
-              placeholder="e.g. Video, E-Book, Tool..."
-              className="w-full bg-main border border-border-subtle rounded-lg px-3 py-2 text-sm focus:border-accent-orange outline-none"
+          {/* Resource Type */}
+          <div className="space-y-2">
+            <label className="text-xs text-text-secondary font-semibold">
+              Resource Type
+            </label>
+            <ResourceTypeSelector
+              options={resourceTypeOptions}
+              // formData.resourceType is a single string — one type per post
+              selected={formData.resourceType}
+              onChange={(value) =>
+                setFormData({ ...formData, resourceType: value })
+              }
             />
           </div>
 
           {/* Resource Link */}
           <div className="space-y-1">
-            <label className="text-xs text-text-secondary font-semibold">Resource Link</label>
+            <label className="text-xs text-text-secondary font-semibold">
+              Resource Link
+            </label>
             <div className="flex gap-2 items-center">
               <LinkIcon className="w-4 h-4 text-text-secondary shrink-0" />
               <input
@@ -142,7 +161,9 @@ export default function MetadataPanel({ postType, formData, setFormData }: Metad
 
           {/* Resource Rating */}
           <div className="space-y-1">
-            <label className="text-xs text-text-secondary font-semibold">Rating (0–5)</label>
+            <label className="text-xs text-text-secondary font-semibold">
+              Rating (0–5)
+            </label>
             <div className="flex gap-2 items-center">
               <Star className="w-4 h-4 text-text-secondary shrink-0" />
               <input
