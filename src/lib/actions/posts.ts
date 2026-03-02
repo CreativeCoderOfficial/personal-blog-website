@@ -256,3 +256,32 @@ export async function createResourceType(
     return handleActionError(error, "createResourceType");
   }
 }
+
+// ------------------------------------------------------------
+// ACTION: deletePost
+// ------------------------------------------------------------
+// Deletes a post by id. Prisma's onDelete: Cascade on Section means
+// all related sections are automatically deleted too.
+// Categories and ResourceType are NOT deleted — they're shared across
+// posts and should persist independently.
+
+export async function deletePost(id: number): Promise<ActionResult> {
+  try {
+    await verifyAdmin();
+
+    await prisma.post.delete({
+      where: { id },
+    });
+
+    // Revalidate the dashboard so the deleted post disappears immediately,
+    // and the public pages so they no longer serve the deleted content
+    revalidatePath("/admin");
+    revalidatePath("/blogs");
+    revalidatePath("/resources");
+
+    return { success: true };
+
+  } catch (error) {
+    return handleActionError(error, "deletePost");
+  }
+}

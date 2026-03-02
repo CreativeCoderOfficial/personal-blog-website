@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma"; // Importing the singleton we created
 import { PostType, PostStatus } from "@prisma/client"; // Type-safe Enums from Prisma
+import { auth } from "@/lib/auth";
 
 
 /**
@@ -17,17 +18,54 @@ export async function GET(request: Request) {
     // 1. Parse the URL to get "Search Params" (e.g., ?page=1&search=nextjs)
     const { searchParams } = new URL(request.url);
     
-    // We try to read 'type' from the URL. 
-    // If it's missing or invalid, we default to 'BLOG' to be safe.
+    // --- Type param ---
     const typeParam = searchParams.get("type")?.toUpperCase();
-    
-    // Check if the provided string is actually a valid PostType Enum
+    // "ALL" means no type restriction. 
+    // If it's missing or invalid, we default to 'BLOG'
+    const isAll = typeParam === "ALL";
     const isValidType = typeParam && Object.keys(PostType).includes(typeParam);
-    const postType = isValidType ? (typeParam as PostType) : PostType.BLOG;
+    let postType: PostType | null;
 
-    // Default result set: Page 1, and 6 posts per page if not specified
+    if (isAll) {
+      // No type restriction — fetch both blogs and resources
+      postType = null;
+    } else if (isValidType) {
+      // A specific valid type was requested
+      postType = typeParam as PostType;
+    } else {
+      // Missing or unrecognised type — default to BLOG
+      postType = PostType.BLOG;
+    }
+
+    // --- Status param ---
+    // support "ALL" statuses (drafts included), gated by auth
+    const statusParam = searchParams.get("status")?.toUpperCase();
+    const requestingAll = statusParam === "ALL";
+
+    if (requestingAll) {
+      // Only admins should be able to request drafts
+      // We check the session here independently of proxy.ts because
+      // this is a public-facing API route that anyone can call directly.
+      const session = await auth();
+      if (!session) {
+        // A response gets sent back and we stop executing
+        return NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 401 }
+        );
+      }
+    }
+
+    // If not requesting all, always default to PUBLISHED
+    const statusFilter = requestingAll ? null : PostStatus.PUBLISHED;
+
+
+
+    // Calculating specific result set slice
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "6");
+    // If we are on page 1, we skip 0. If page 2, we skip the first 6, etc...
+    const skip = (page - 1) * limit;
 
     // Search filters:
     const search = searchParams.get("search") || "";
@@ -35,20 +73,22 @@ export async function GET(request: Request) {
     const dateFromParam = searchParams.get("dateFrom");
     const dateToParam = searchParams.get("dateTo");
 
-
     // Variable params:
     const resourceTypeParam = searchParams.get("resourceType"); // for resources
 
-    // 2. Calculate "Skip"
-    // If we are on page 1, we skip 0. If page 2, we skip the first 6, etc...
-    const skip = (page - 1) * limit;
 
     // 3. Build the Database Query Filters (The "Where" Clause)
-    // We start with the base rules: Must be a BLOG and must be PUBLISHED.
-    const whereClause: any = {
-      type: postType, 
-      status: PostStatus.PUBLISHED,
-    };
+    const whereClause: any = {};
+
+     // Only add type filter if a specific type was requested (not ALL)
+    if (postType) {
+      whereClause.type = postType;
+    }
+
+    // Only add status filter if not requesting all statuses
+    if (statusFilter) {
+      whereClause.status = statusFilter;
+    }
 
 
     // Filter on search terms
