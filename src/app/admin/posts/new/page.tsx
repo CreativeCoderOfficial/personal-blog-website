@@ -4,7 +4,7 @@
 // needs (the most recent list of categories and resource types) and pass them as props.
 
 import { prisma } from "@/lib/prisma";
-import CreatePostForm from "@/components/admin/CreatePostForm";
+import PostForm from "@/components/admin/PostForm";
 
 export default async function NewPostPage() {
 
@@ -25,7 +25,8 @@ export default async function NewPostPage() {
   // Prisma returns plain objects so no serialization needed here
   // (unlike Dates, which would need .toISOString())
   return (
-    <CreatePostForm
+    <PostForm
+      mode="create"
       categories={categories}
       resourceTypes={resourceTypes}
     />

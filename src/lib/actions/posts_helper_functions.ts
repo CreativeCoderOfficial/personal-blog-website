@@ -1,5 +1,3 @@
-"use server";
-
 import { auth } from "@/lib/auth";
 import { z } from "zod";
 import { ActionResult } from "@/lib/actions/posts";
