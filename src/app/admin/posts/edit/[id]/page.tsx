@@ -1,92 +1,69 @@
-"use client";
+// src/app/admin/posts/edit/[id]/page.tsx
+//
+// Server Component — fetches the post and passes it to PostForm as initialData.
+// Mirrors the pattern in new/page.tsx, with two additions:
+//   1. Parses and validates the [id] URL param
+//   2. Fetches the specific post by id, including all its relations
 
-import { useState } from "react";
-import Link from "next/link";
-import { ArrowLeft, Save } from "lucide-react";
+import { notFound } from "next/navigation";
+import { prisma } from "@/lib/prisma";
+import PostForm from "@/components/admin/PostForm";
 
-// Import our new sub-components
-import PostTypeSelector from "@/components/admin/PostTypeSelector";
-import MetadataPanel from "@/components/admin/MetadataPanel";
-import ContentEditor from "@/components/admin/ContentEditor";
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
-export default function CreatePostPage() {
-  const [postType, setPostType] = useState<"blog" | "resource">("blog");
-  const [isLoading, setIsLoading] = useState(false);
+export default async function EditPostPage({ params }: PageProps) {
+  const { id } = await params;
 
-  // Central Form State
-  const [formData, setFormData] = useState({
-    title: "", slug: "", summary: "", categories: "", thumbnailUrl: "",
-    readingTime: "", fileSize: "", fileType: "ZIP",
+  const postId = parseInt(id, 10);
+  if (isNaN(postId)) notFound();
+
+  // Fetch the post with all relations the form needs.
+  // If the post doesn't exist, trigger notFound() 
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+    include: {
+      // We only select the fields InitialPostData expects —
+      // no need to fetch section ids or postIds since the form doesn't use them
+      sections: {
+        select: {
+          title: true,
+          content: true,
+          imageUrl: true,
+          imageDescription: true,
+        },
+        orderBy: { order: "asc" },
+      },
+      categories: {
+        select: { name: true },
+      },
+      resourceType: {
+        select: { name: true },
+      },
+    },
   });
-  const [takeaways, setTakeaways] = useState<string[]>([""]);
-  const [paragraphs, setParagraphs] = useState([{ title: "", text: "", imageUrl: "" }]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setTimeout(() => {
-      alert("Post Created Successfully! (Mock)");
-      setIsLoading(false);
-    }, 1500);
-  };
+  if (!post) notFound();
+
+  // Fetch all available categories and resource types for the form selectors —
+  // same as new/page.tsx
+  const categories = await prisma.category.findMany({
+    select: { name: true, color: true },
+    orderBy: { name: "asc" },
+  });
+
+  const resourceTypes = await prisma.resourceType.findMany({
+    select: { name: true },
+    orderBy: { name: "asc" },
+  });
 
   return (
-    <main className="min-h-screen bg-main text-text-primary p-6 md:p-12 pb-32">
-      
-      {/* 1. NAVIGATION */}
-      <div className="max-w-5xl mx-auto mb-10 flex items-center justify-between">
-        <Link 
-          href="/admin" 
-          className="flex items-center gap-2 text-text-secondary hover:text-white transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span>Back to Dashboard</span>
-        </Link>
-        <h1 className="text-2xl font-bold hidden md:block">Content Creator Studio</h1>
-      </div>
-
-      <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        {/* --- LEFT COLUMN: SETTINGS --- */}
-        <div className="lg:col-span-4 space-y-6">
-          <PostTypeSelector postType={postType} setPostType={setPostType} />
-          
-          <MetadataPanel 
-            postType={postType} 
-            formData={formData} 
-            setFormData={setFormData} 
-          />
-        </div>
-
-        {/* --- RIGHT COLUMN: CONTENT --- */}
-        <div className="lg:col-span-8 space-y-6">
-          
-          <ContentEditor 
-            formData={formData} setFormData={setFormData}
-            takeaways={takeaways} setTakeaways={setTakeaways}
-            paragraphs={paragraphs} setParagraphs={setParagraphs}
-          />
-
-          {/* Submit Button */}
-          <div className="flex justify-end">
-            <button 
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className="
-                px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-3
-                bg-gradient-to-r from-accent-purple to-purple-600 text-white
-                shadow-lg shadow-purple-500/20 hover:scale-[1.02] active:scale-[0.98]
-                disabled:opacity-70 disabled:cursor-not-allowed
-                transition-all duration-300
-              "
-            >
-              {isLoading ? "Publishing..." : "Publish Post"}
-              {!isLoading && <Save className="w-5 h-5" />}
-            </button>
-          </div>
-
-        </div>
-      </div>
-    </main>
+    <PostForm
+      mode="edit"
+      initialData={post}
+      categories={categories}
+      resourceTypes={resourceTypes}
+    />
   );
 }
