@@ -4,7 +4,7 @@
 
 "use server";
 
-import { auth } from "@/lib/auth";
+
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -12,61 +12,25 @@ import {
   createPostSchema,
   createCategorySchema,
   createResourceTypeSchema,
+  updatePostSchema,
   type CreatePostData,
   type CreateCategoryData,
   type CreateResourceTypeData,
+  type UpdatePostData,
 } from "@/lib/validators/post";
+import { verifyAdmin, formatZodErrors, handleActionError } from "./posts_helper_functions";
+import { buildCategoryConnectOrCreate, buildSectionData, processCategoryNames, buildResourceTypeRelation } from "./posts_helper_functions";
 
 // We define what the response is of a server action, this can then be rendered on the client side
-type ActionResult =
+export type ActionResult =
   | { success: true; slug?: string }   // slug is for redirect after create
   | { success: false; error: string };
   
-// ------------------------------------------------------------
-// HELPER: verifyAdmin
-// ------------------------------------------------------------
-// A small private helper that checks the session and throws an error if
-// there is none. We call this at the top of every action.
-
-async function verifyAdmin(): Promise<void> {
-  const session = await auth();
-
-  // If there's no session, we throw an Error.
-  // In Server Actions, throwing stops execution immediately —
-  // the calling component's try/catch will catch it.
-  if (!session) {
-    throw new Error("Unauthorized");
-  }
-}
-
-// Uses Zod v4's built-in prettifyError utility —
-// no manual .issues mapping needed
-function formatZodErrors(error: unknown): string {
-  return z.prettifyError(error as z.ZodError);
-}
-
-// Handles errors thrown inside Server Actions consistently.
-// Two cases:
-//   - "Unauthorized" thrown by verifyAdmin() → return 401-style message
-//   - Anything else → log it server-side, return a generic message to the client
-//     (we never expose raw error details to the client — could leak internals)
-function handleActionError(error: unknown, context: string): ActionResult {
-  if (error instanceof Error && error.message === "Unauthorized") {
-    return { success: false, error: "Unauthorized" };
-  }
-  console.error(`[${context}]`, error);
-  return { success: false, error: "Something went wrong. Please try again." };
-}
-
-
-
-
 
 
 // ------------------------------------------------------------
 // ACTION: createPost
 // ------------------------------------------------------------
-
 export async function createPost(data: CreatePostData): Promise<ActionResult> {
   try {
     // 1. Verify the admin session before doing anything else
@@ -100,46 +64,16 @@ export async function createPost(data: CreatePostData): Promise<ActionResult> {
     } = validated.data;
 
     // 3. Process categories
-    const categoryNames: string[] = Array.isArray(categories)
-      ? categories.map((c) => c.trim()).filter(Boolean)
-      : (categories ?? "")
-          .split(",")
-          .map((c) => c.trim())
-          .filter(Boolean);
-    // .filter(Boolean) removes any empty strings that result from trailing commas or extra spaces e.g. "tech, , productivity,"
+    const categoryNames = processCategoryNames(categories);
+    const categoryConnectOrCreate = buildCategoryConnectOrCreate(categoryNames);
+    
+    // 4. Process sections 
+    const sectionData = buildSectionData(sections);
 
-    // 4. Build the Prisma `categories` relation using `connectOrCreate`.
-    // connectOrCreate means: "find an existing category with this name  and connect it, OR create a new one if it doesn't exist yet."
-    // This way we never get duplicate categories in the DB.
-    const categoryConnectOrCreate = categoryNames.map((name) => ({
-      where: { name },   // look for existing category with this name
-      create: { name, color: "#6366f1" }, // create with default color if not found
-    }));
+    // 5. Handle resource type — same as createPost
+    const resourceTypeRelation = buildResourceTypeRelation(resourceType);
 
-
-    // 5. Process sections.
-    // Your ContentEditor uses `para.text` for content, but your Prisma
-    // Section model uses `content`. We map between them here.
-    const sectionData = sections.map((section, index) => ({
-      order: index,
-      title: section.title ?? null,
-      content: section.content ?? null,   // <-- maps from form's "text" field
-      imageUrl: section.imageUrl || null,
-      imageDescription: section.imageDescription ?? null,
-    }));
-
-    // 6. Handle resource type.
-    // If a resourceType name was provided, we connectOrCreate it.
-    const resourceTypeRelation = resourceType
-      ? {
-          connectOrCreate: {
-            where: { name: resourceType },
-            create: { name: resourceType },
-          },
-        }
-      : undefined;
-
-    // 7. Write everything to the database in a single Prisma `create` call.
+    // 6. Write everything to the database in a single Prisma `create` call.
     // This is an atomic operation — if any part fails (e.g. a section
     // fails to insert), the ENTIRE operation is rolled back automatically.
     const post = await prisma.post.create({
@@ -186,6 +120,134 @@ export async function createPost(data: CreatePostData): Promise<ActionResult> {
 
   } catch (error) {
     return handleActionError(error, "createPost");
+  }
+}
+
+
+// ------------------------------------------------------------
+// ACTION: updatePost
+// ------------------------------------------------------------
+// Updates an existing post by id.
+// Strategy for sections: delete all existing ones and re-insert.
+// This avoids complex diffing logic — order may have changed, sections
+// may have been added or removed. A clean replace is simpler and correct.
+// Strategy for categories: disconnect all, then reconnect with connectOrCreate.
+// Same reasoning — simpler than tracking which were added/removed.
+// All three operations (delete sections, reconnect categories, update post)
+// are wrapped in a prisma.$transaction so they succeed or fail together.
+
+export async function updatePost(data: UpdatePostData): Promise<ActionResult> {
+  try {
+    // 1. Verify admin session
+    await verifyAdmin();
+
+    // 2. Validate with our update schema (same as create, but with id added)
+    const validated = updatePostSchema.safeParse(data);
+    if (!validated.success) {
+      return { success: false, error: `Validation failed: ${formatZodErrors(validated.error)}` };
+    }
+
+    const {
+      id,
+      title,
+      slug,
+      summary,
+      type,
+      status,
+      readingTime,
+      thumbnailUrl,
+      keyTakeaways,
+      sections,
+      categories,
+      resourceType,
+      resourceCost,
+      resourceRating,
+      resourceLink,
+    } = validated.data;
+
+    // 3. Check the post actually exists before trying to update it
+    const existing = await prisma.post.findUnique({ where: { id } });
+    if (!existing) {
+      return { success: false, error: "Post not found" };
+    }
+
+    // 4. Process categories 
+    const categoryNames = processCategoryNames(categories);
+    const categoryConnectOrCreate = buildCategoryConnectOrCreate(categoryNames);
+    
+    // 5. Process sections 
+    const sectionData = buildSectionData(sections);
+
+    // 6. Handle resource type — same as createPost
+    const resourceTypeRelation = buildResourceTypeRelation(resourceType);
+
+    // 7. Run all mutations in a single transaction.
+    const [, , updatedPost] = await prisma.$transaction([
+
+      // Delete all existing sections for this post.
+      // We re-insert them fresh below so we don't have to diff order changes.
+      prisma.section.deleteMany({
+        where: { postId: id },
+      }),
+
+      // Disconnect ALL current categories from this post.
+      // "set: []" means "replace the current relation set with an empty set",
+      // which effectively removes all category connections without deleting the category records themselves.
+      prisma.post.update({
+        where: { id },
+        data: { categories: { set: [] } },
+      }),
+
+      // Step C: Update the post with all new values, and re-create sections and re-connect categories in the same operation.
+      prisma.post.update({
+        where: { id },
+        data: {
+          title,
+          slug,
+          summary,
+          type,
+          status,
+          readingTime,
+          thumbnailUrl: thumbnailUrl || null,
+          keyTakeaways,
+          resourceCost: resourceCost ?? null,
+          resourceRating: resourceRating ?? null,
+          resourceLink: resourceLink || null,
+
+          // Re-create all sections from scratch
+          sections: {
+            create: sectionData,
+          },
+
+          // Re-connect categories (connectOrCreate handles new ones)
+          categories: {
+            connectOrCreate: categoryConnectOrCreate,
+          },
+
+          // Update or clear resource type
+          resourceType: resourceTypeRelation,
+        },
+      }),
+    ]);
+
+    // 8. Revalidate paths — both old slug and new slug in case it changed.
+    // We revalidate the old slug (from `existing`) in case it was renamed,
+    // so the old URL doesn't serve stale cached content.
+    revalidatePath("/admin");
+    revalidatePath("/admin/posts");
+
+    if (status === "PUBLISHED" || existing.status === "PUBLISHED") {
+      // Revalidate both old and new slug in case slug changed
+      const basePath = type === "BLOG" ? "/blogs" : "/resources";
+      revalidatePath(basePath);
+      revalidatePath(`${basePath}/${slug}`);
+      revalidatePath(`${basePath}/${existing.slug}`);
+    }
+
+    return { success: true, slug: updatedPost.slug };
+
+  } catch (error) {
+    return handleActionError(error, "updatePost");
   }
 }
 
