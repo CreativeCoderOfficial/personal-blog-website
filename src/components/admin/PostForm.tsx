@@ -16,7 +16,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Save, CheckCircle } from "lucide-react";
-import PostTypeSelector from "@/components/admin/PostTypeSelector";
+import PostTypeSelector from "@/components/admin/admin-widgets/PostTypeSelector";
 import MetadataPanel from "@/components/admin/MetadataPanel";
 import ContentEditor from "@/components/admin/ContentEditor";
 
@@ -69,9 +69,6 @@ export interface InitialPostData {
   resourceLink: string | null;
 }
 
-// ------------------------------------------------------------
-// Props
-// ------------------------------------------------------------
 interface PostFormProps {
   mode: "create" | "edit";
   // Only provided in edit mode — undefined in create mode
