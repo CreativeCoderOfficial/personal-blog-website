@@ -5,11 +5,24 @@ import { PostType } from "@prisma/client";
 // 1. Define the Input Arguments
 interface UsePostFetcherProps {
   initialPosts: PostItem[];
-  type: PostType; // 'BLOG' or 'RESOURCE'
+  // "ALL" fetches both blogs and resources — used by the admin dashboard.
+  // When "ALL" is passed, no type param is sent to the API.
+  type: PostType | "ALL";
+  // "PUBLISHED" is the default for public pages.
+  // "ALL" fetches drafts too — requires admin session on the API side.
+  status?: "PUBLISHED" | "ALL";
+  // How many posts to fetch per page. Public pages use 6, admin uses 12.
+  limit?: number
 }
 
 // 2. Define the Hooks Function
-export function usePostFetcher({ initialPosts, type }: UsePostFetcherProps) {
+export function usePostFetcher({ 
+  initialPosts, 
+  type,   
+  // default values for optional args
+  status = "PUBLISHED",
+  limit = 6,
+}: UsePostFetcherProps) {
   
     // Loading State & page index
   const [posts, setPosts] = useState<PostItem[]>(initialPosts);
@@ -38,9 +51,12 @@ export function usePostFetcher({ initialPosts, type }: UsePostFetcherProps) {
     try {
       // 1. Build the URL Query 
       const params = new URLSearchParams();
-      params.set("type", type); // 'BLOG' or 'RESOURCE'
+
+
+      params.set("type", type); 
       params.set("page", pageParam.toString());
-      params.set("limit", "6");
+      params.set("limit", limit.toString());
+      params.set("status", status);
       
       // Append filters if they exist
       if (filters.search) params.set("search", filters.search);
@@ -61,7 +77,7 @@ export function usePostFetcher({ initialPosts, type }: UsePostFetcherProps) {
         // If searching/filtering, we REPLACE the whole list
         setPosts(newPosts);
         // If we got fewer than 6 posts, we know we are at the end
-        setHasMore(newPosts.length >= 6); 
+        setHasMore(newPosts.length >= limit); 
       } else {
         // If loading more, we APPEND to the existing list
         setPosts((prev) => [...prev, ...newPosts]);
@@ -72,7 +88,7 @@ export function usePostFetcher({ initialPosts, type }: UsePostFetcherProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [type, filters]); // Re-create this function only if 'type' or 'filters' change
+  }, [type, status, limit, filters]); // Re-create this function only if any of these components change
 
   // --- EFFECT 1: Handle Filter Changes ---
   // Triggers when user types or selects a category

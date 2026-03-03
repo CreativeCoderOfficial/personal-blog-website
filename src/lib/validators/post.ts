@@ -79,6 +79,14 @@ export const createPostSchema = z.object({
 
 export type CreatePostData = z.infer<typeof createPostSchema>;
 
+// updatePostSchema extends createPostSchema with an id field.
+// .extend() means all existing fields are inherited automatically
+export const updatePostSchema = createPostSchema.extend({
+  id: z.number().int().positive(),
+});
+
+export type UpdatePostData = z.infer<typeof updatePostSchema>;
+
 // --- Category Schema ---
 // Used by the separate createCategory Server Action
 export const createCategorySchema = z.object({

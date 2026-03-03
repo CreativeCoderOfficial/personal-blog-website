@@ -1,5 +1,9 @@
 // src/components/admin/ContentEditor.tsx
 import { Plus, Trash2, Type, Image as ImageIcon } from "lucide-react";
+import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
 
 // Replaced `text` with `content` throughout to match the Prisma Section model
 // and the Zod sectionSchema
@@ -39,10 +43,27 @@ export default function ContentEditor({
     setSections([...sections, { title: "", content: "", imageUrl: "" }]);
   const handleRemoveSection = (idx: number) =>
     setSections(sections.filter((_, i) => i !== idx));
+  
   const handleSectionChange = (idx: number, field: string, val: string) => {
     const updated = [...sections];
     updated[idx] = { ...updated[idx], [field]: val };
     setSections(updated);
+  };
+
+  // Tracks which section indices are in preview mode.
+  // We use a Set because adding/removing by index is cleaner than
+  // manipulating an array of booleans.
+  const [previewSections, setPreviewSections] = useState<Set<number>>(new Set());
+
+  // Toggles a section between write and preview mode.
+  // We spread the Set into a new one because React needs a new reference
+  // to detect state changes — mutating the existing Set won't trigger a re-render.
+  const togglePreview = (idx: number) => {
+    setPreviewSections((prev) => {
+      const next = new Set(prev);
+      next.has(idx) ? next.delete(idx) : next.add(idx);
+      return next;
+    });
   };
 
   return (
@@ -151,14 +172,59 @@ export default function ContentEditor({
                   />
                 </div>
 
-                {/* Section Content — was `text`, now `content` to match Prisma */}
-                <textarea
-                  value={section.content}
-                  onChange={(e) => handleSectionChange(idx, "content", e.target.value)}
-                  rows={4}
-                  placeholder="Write your section content here..."
-                  className="w-full bg-main/50 rounded-lg border border-border-subtle/50 p-3 text-sm text-text-secondary focus:text-text-primary focus:border-accent-orange outline-none resize-y"
-                />
+                {/* Section Content - with write / preview mode*/}
+
+                <div className="flex gap-1 mb-2">
+                  {["Write", "Preview"].map((tab) => {
+                    const isActive = tab === "Preview"
+                      ? previewSections.has(idx)
+                      : !previewSections.has(idx);
+                    return (
+                      <button
+                        key={tab}
+                        type="button"
+                        onClick={() => togglePreview(idx)}
+                        className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+                          isActive
+                            ? "bg-accent-purple text-white"
+                            : "text-text-secondary hover:text-white"
+                        }`}
+                      >
+                        {tab}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Content: textarea in write mode, ReactMarkdown in preview mode */}
+                {previewSections.has(idx) ? (
+                  // Preview mode — renders the markdown using the same prose classes
+                  // as ContentRenderer.tsx so the preview matches the published post exactly
+                  <div className="
+                    min-h-[120px] px-4 py-3 rounded-xl border border-border-subtle bg-main/50
+                    prose prose-invert max-w-none
+                    prose-headings:text-text-primary prose-p:text-text-secondary
+                    prose-a:text-accent-purple prose-strong:text-text-primary
+                    prose-code:text-accent-orange prose-code:bg-accent-orange/10
+                    prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md
+                    prose-code:before:content-none prose-code:after:content-none
+                  ">
+                    {section.content
+                      ? <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>{section.content}</ReactMarkdown>
+                      : <p className="text-text-secondary/40 italic text-sm">Nothing to preview yet...</p>
+                    }
+                  </div>
+                ) : (
+                  // Write mode — the existing textarea
+                  <textarea
+                    value={section.content}
+                    onChange={(e) => handleSectionChange(idx, "content", e.target.value)}
+                    rows={6}
+                    className="w-full bg-main/50 text-text-primary rounded-xl border border-border-subtle p-4
+                      placeholder:text-text-secondary/50 focus:border-accent-purple outline-none resize-none"
+                    placeholder="Write your content in markdown..."
+                  />
+                )}
 
                 {/* Optional Image URL */}
                 <div className="flex gap-2 items-center">
