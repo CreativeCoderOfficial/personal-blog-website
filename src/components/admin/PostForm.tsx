@@ -19,23 +19,13 @@ import { ArrowLeft, Save, CheckCircle } from "lucide-react";
 import PostTypeSelector from "@/components/admin/admin-widgets/PostTypeSelector";
 import MetadataPanel from "@/components/admin/MetadataPanel";
 import ContentEditor from "@/components/admin/ContentEditor";
+import { CategoryOption, ResourceTypeOption, PostFormData } from "@/types/post";
 
 // The shape of one content section — same as before
 interface SectionItem {
   title: string;
   content: string;
   imageUrl: string;
-}
-
-// The shape of a category coming from the DB
-export interface CategoryOption {
-  name: string;
-  color: string;
-}
-
-// The shape of a resource type coming from the DB
-export interface ResourceTypeOption {
-  name: string;
 }
 
 // ------------------------------------------------------------
@@ -98,7 +88,7 @@ export default function PostForm({
 
   // The ?? syntax means "if initialData.field is undefined or null, use the default value on the right".
   // This allows us to seed the form with existing data in edit mode, while still having clean defaults in create mode.
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<PostFormData>({
     title: initialData?.title ?? "",
     slug: initialData?.slug ?? "",
     summary: initialData?.summary ?? "",

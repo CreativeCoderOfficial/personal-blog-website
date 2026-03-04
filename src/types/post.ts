@@ -50,3 +50,30 @@ export interface ResourcePost extends BasePost {
 // This is what we use in components.
 // It means "This variable is EITHER a Blog OR a Resource"
 export type PostItem = BlogPost | ResourcePost;
+
+// The shape of the controlled form state shared between PostForm,
+// MetadataPanel, and ContentEditor.
+export interface PostFormData {
+  title: string;
+  slug: string;
+  summary: string;
+  thumbnailUrl: string;
+  readingTime: string; 
+  status: "DRAFT" | "PUBLISHED";
+  categories: string[];
+  resourceType: string;
+  resourceLink: string;
+  resourceCost: string;  
+  resourceRating: string;
+}
+
+// The shape of a category coming from the DB
+export interface CategoryOption {
+  name: string;
+  color: string;
+}
+
+// The shape of a resource type coming from the DB
+export interface ResourceTypeOption {
+  name: string;
+}
