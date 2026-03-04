@@ -7,15 +7,14 @@ import ContentGrid from "@/components/posts/filtering/ContentGrid";
 import ContentCard from "@/components/posts/filtering/ContentCard";
 import { Loader2, Download, Layers } from "lucide-react";
 
-// Categories can be the same or specific to resources. 
-const CATEGORIES = ["tech", "planning", "productivity", "health", "superpowered-learning"];
 
 interface ResourcesContainerProps {
   initialPosts: ResourcePost[];
+  categories: string[]; 
   resourceTypes: string[];      
 }
 
-export default function ResourcesContainer({ initialPosts, resourceTypes }: ResourcesContainerProps) {
+export default function ResourcesContainer({ initialPosts, categories,resourceTypes }: ResourcesContainerProps) {
   
   // 1. PLUG IN THE ENGINE
   const { 
@@ -36,7 +35,7 @@ export default function ResourcesContainer({ initialPosts, resourceTypes }: Reso
         
         // Category Config
         filterLabel="Filter by Topic"
-        filterOptions={CATEGORIES}
+        filterOptions={categories}
         
         // Resource Type Config 
         resourceTypeLabel="Filter by File Type"

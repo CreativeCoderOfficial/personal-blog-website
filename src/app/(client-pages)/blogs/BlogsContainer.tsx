@@ -11,19 +11,10 @@ import { usePostFetcher } from "@/hooks/usePostFetcher";
 
 interface BlogListProps {
   initialPosts: BlogPost[];
+  categories: string[];
 }
 
-// You might want to fetch these from the DB later, but hardcoded is fine for now
-const CATEGORIES = [
-  "tech", 
-  "planning", 
-  "productivity", 
-  "health", 
-  "superpowered-learning", 
-  "elevating the mind"
-]; 
-
-export default function BlogsContainer({ initialPosts }: BlogListProps) {
+export default function BlogsContainer({ initialPosts, categories }: BlogListProps) {
   // 1. USE THE HOOK
   // We plug in the "Engine" and get all the tools we need back.
   // Note: We cast initialPosts because our hook uses the generic 'PostItem'
@@ -47,7 +38,7 @@ export default function BlogsContainer({ initialPosts }: BlogListProps) {
       <FilterPanel 
         searchPlaceholder="Search articles..."
         filterLabel="Filter by Category"
-        filterOptions={CATEGORIES}
+        filterOptions={categories}
         filters={filters}
         setFilters={setFilters}
       />
