@@ -141,6 +141,7 @@ export function usePostFetcher({
     hasMore,
     sentinelRef,
     filters,
-    setFilters, // Expose the setter so the UI can update filters
+    setFilters,
+    setPosts,
   };
 }

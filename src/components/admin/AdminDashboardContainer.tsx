@@ -77,7 +77,7 @@ export default function AdminDashboardContainer({
   const [contentType, setContentType] = useState<"all" | "BLOG" | "RESOURCE">("all");
 
   // --- Delete state ---
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // --- usePostFetcher ---
   // type="ALL"   → no type restriction in API query
@@ -90,6 +90,7 @@ export default function AdminDashboardContainer({
     sentinelRef, // attach to a div at the bottom to trigger next page load
     filters,
     setFilters,
+    setPosts,
   } = usePostFetcher({
     initialPosts,
     type: "ALL",
@@ -112,15 +113,17 @@ export default function AdminDashboardContainer({
     );
     if (!confirmed) return;
 
-    setDeletingId(id);
+    setIsDeleting(true);
     const result = await deletePost(id);
+    setIsDeleting(false);
 
     if (!result.success) {
       alert(`Failed to delete: ${result.error}`);
+      return;
     }
-    // deletePost calls revalidatePath("/admin") which re-runs the Server
-    // Component and refreshes initialPosts — deleted post disappears automatically
-    setDeletingId(null);
+
+    // Remove the deleted post from local state (instead of re-fetching everything)
+    setPosts((prev) => prev.filter((p) => p.id !== id));
   };
 
   return (
@@ -189,7 +192,6 @@ export default function AdminDashboardContainer({
         <ContentGrid isEmpty={visiblePosts.length === 0}>
           {visiblePosts.map((post) => {
             const adminPost = post as AdminPost;
-            const isDeleting = deletingId === post.id;
             const isResource = post.type === "RESOURCE";
 
             return (

@@ -234,7 +234,6 @@ export async function updatePost(data: UpdatePostData): Promise<ActionResult> {
     // We revalidate the old slug (from `existing`) in case it was renamed,
     // so the old URL doesn't serve stale cached content.
     revalidatePath("/admin");
-    revalidatePath("/admin/posts");
 
     if (status === "PUBLISHED" || existing.status === "PUBLISHED") {
       // Revalidate both old and new slug in case slug changed
