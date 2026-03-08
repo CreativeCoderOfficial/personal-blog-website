@@ -11,17 +11,18 @@ export const dynamic = "force-dynamic";
 export default async function BlogsPage() {
   // 1. Fetch Data Directly from Database
   // Since this is a Server Component, we can use 'prisma' directly!
-  const postsData = await prisma.post.findMany({
-    where: {
-      type: PostType.BLOG,       
-      status: PostStatus.PUBLISHED,
-    },
-    take: 6, // Must match the 'limit' in your API route
-    orderBy: { createdAt: "desc" },
-    include: {
-      categories: true, // Join with Categories table
-    },
-  });
+  const [postsData, categoriesData] = await Promise.all([
+    prisma.post.findMany({
+      where: { type: PostType.BLOG, status: PostStatus.PUBLISHED },
+      take: 6,
+      orderBy: { createdAt: "desc" },
+      include: { categories: true },
+    }),
+    prisma.category.findMany({
+      select: { name: true },
+      orderBy: { name: "asc" },
+    }),
+  ]);
 
   // 2. Data Serialization (The "Bridge")
   // We must convert the raw Database objects into the 'BlogPost' type 
@@ -35,6 +36,9 @@ export default async function BlogsPage() {
     updatedAt: post.updatedAt.toISOString(),
   }));
 
+
+  const categoryNames = categoriesData.map((cat) => cat.name);
+
   return (
     <main className="min-h-screen bg-main">
       {/* 3. Render Static Content */}
@@ -46,7 +50,7 @@ export default async function BlogsPage() {
 
       {/* 4. Hand off to Client Component */}
       <div className="container w-full mx-auto px-6 lg:px-10 xl:px-16 2xl:px-24">
-         <BlogsContainer initialPosts={initialPosts} />
+         <BlogsContainer initialPosts={initialPosts} categories={categoryNames} />
       </div>
     </main>
   );

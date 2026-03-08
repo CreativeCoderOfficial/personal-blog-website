@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { Plus, Loader2, Check } from "lucide-react";
 import { createCategory } from "@/lib/actions/posts";
-import type { CategoryOption } from "@/components/admin/PostForm";
+import { CategoryOption } from "@/types/admin";
 
 interface CategorySelectorProps {
   options: CategoryOption[];

@@ -19,55 +19,7 @@ import { ArrowLeft, Save, CheckCircle } from "lucide-react";
 import PostTypeSelector from "@/components/admin/admin-widgets/PostTypeSelector";
 import MetadataPanel from "@/components/admin/MetadataPanel";
 import ContentEditor from "@/components/admin/ContentEditor";
-
-// The shape of one content section — same as before
-interface SectionItem {
-  title: string;
-  content: string;
-  imageUrl: string;
-}
-
-// The shape of a category coming from the DB
-export interface CategoryOption {
-  name: string;
-  color: string;
-}
-
-// The shape of a resource type coming from the DB
-export interface ResourceTypeOption {
-  name: string;
-}
-
-// ------------------------------------------------------------
-// InitialData — the shape of a post as fetched from Prisma
-// and passed down from the edit page Server Component.
-// All fields are optional at the type level because this prop
-// is only provided in edit mode — in create mode it's undefined.
-// ------------------------------------------------------------
-export interface InitialPostData {
-  id: number;
-  title: string;
-  slug: string;
-  summary: string;
-  type: "BLOG" | "RESOURCE";
-  status: "DRAFT" | "PUBLISHED";
-  readingTime: number;
-  thumbnailUrl: string | null;
-  keyTakeaways: string[];
-  // Sections from Prisma include extra fields (id, postId, order)
-  // we only need the content fields for the form
-  sections: {
-    title: string | null;
-    content: string | null;
-    imageUrl: string | null;
-    imageDescription: string | null;
-  }[];
-  categories: { name: string }[];
-  resourceType: { name: string } | null;
-  resourceCost: number | null;
-  resourceRating: number | null;
-  resourceLink: string | null;
-}
+import type { PostFormData, SectionItem, InitialPostData, CategoryOption, ResourceTypeOption } from "@/types/admin";
 
 interface PostFormProps {
   mode: "create" | "edit";
@@ -98,7 +50,7 @@ export default function PostForm({
 
   // The ?? syntax means "if initialData.field is undefined or null, use the default value on the right".
   // This allows us to seed the form with existing data in edit mode, while still having clean defaults in create mode.
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<PostFormData>({
     title: initialData?.title ?? "",
     slug: initialData?.slug ?? "",
     summary: initialData?.summary ?? "",

@@ -90,6 +90,11 @@ export default function ContentRenderer({ sections }: ContentRendererProps) {
                   blockquote: ({...props}) => (
                     <blockquote className="border-l-4 border-accent-purple bg-accent-purple/5 px-4 py-2 rounded-r-lg not-italic my-6 text-text-secondary" {...props} />
                   ),
+
+                  h1: ({...props}) => <h1 className="text-3xl md:text-4xl font-extrabold text-text-primary mt-12 mb-6" {...props} />,
+                  h2: ({...props}) => <h2 className="text-2xl md:text-3xl font-bold text-text-primary mt-10 mb-5" {...props} />,
+                  h3: ({...props}) => <h3 className="text-xl md:text-2xl font-bold text-text-primary mt-8 mb-4" {...props} />,
+                  h4: ({...props}) => <h4 className="text-lg md:text-xl font-bold text-text-primary mt-6 mb-3" {...props} />,
                 }}
               >
                 {section.content}

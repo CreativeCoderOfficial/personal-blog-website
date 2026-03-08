@@ -8,7 +8,7 @@
 import { useState } from "react";
 import { Plus, Loader2, Check } from "lucide-react";
 import { createResourceType } from "@/lib/actions/posts";
-import type { ResourceTypeOption } from "@/components/admin/CreatePostForm";
+import type { ResourceTypeOption } from "@/types/admin";
 
 interface ResourceTypeSelectorProps {
   // Full list of available resource types — grows when admin creates new ones

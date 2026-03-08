@@ -8,8 +8,9 @@ export const dynamic = "force-dynamic";
 
 export default async function ResourcesPage() {
   
-  // 1. Fetch Posts (Resources only)
-  const postsData = await prisma.post.findMany({
+  // 1. Fetch Resource posts and all filter options 
+  const [postsData, resourceTypesData, categoriesData] = await Promise.all([
+  prisma.post.findMany({
     where: {
       type: PostType.RESOURCE,
       status: PostStatus.PUBLISHED,
@@ -20,19 +21,26 @@ export default async function ResourcesPage() {
       categories: true,
       resourceType: true, // Crucial: We need the type name (e.g. "Video")
     },
-  });
+  }),
 
-  // 2. Fetch Available Resource Types (for the Filter Buttons)
-  // We want a list of names like ["App", "Video", "Tool"]
-  const resourceTypesData = await prisma.resourceType.findMany({
+
+  prisma.resourceType.findMany({
     select: { name: true },
     orderBy: { name: 'asc' }
-  });
-  
-  // Convert [{name: 'App'}, {name: 'Video'}] -> ['App', 'Video']
+  }),
+
+
+  prisma.category.findMany({
+    select: { name: true },
+    orderBy: { name: "asc" },
+  }),
+]);
+
+  // Map the names[{name: 'App'}, {name: 'Video'}] -> ['App', 'Video']
+  const categoryNames = categoriesData.map((c) => c.name);
   const resourceTypeNames = resourceTypesData.map(rt => rt.name);
 
-  // 3. Serialize Data
+  // 2. Serialize Data
   const initialPosts: ResourcePost[] = postsData.map((post) => ({
     ...post,
     type: "RESOURCE",
@@ -54,6 +62,7 @@ export default async function ResourcesPage() {
       <div className="container w-full mx-auto px-6 lg:px-10 xl:px-16 2xl:px-24">
          <ResourcesContainer 
            initialPosts={initialPosts} 
+           categories={categoryNames}
            resourceTypes={resourceTypeNames} 
          />
       </div>
