@@ -4,23 +4,15 @@ import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
-import { PostFormData } from "@/types/post";
-
-// Replaced `text` with `content` throughout to match the Prisma Section model
-// and the Zod sectionSchema
-interface Section {
-  title: string;
-  content: string; // was: text
-  imageUrl: string;
-}
+import { PostFormData, SectionItem } from "@/types/admin";
 
 interface ContentEditorProps {
   formData: PostFormData;
   setFormData: (data: PostFormData) => void;
   takeaways: string[];
   setTakeaways: (data: string[]) => void;
-  sections: Section[];    
-  setSections: (data: Section[]) => void;
+  sections: SectionItem[];    
+  setSections: (data: SectionItem[]) => void;
 }
 
 export default function ContentEditor({ 

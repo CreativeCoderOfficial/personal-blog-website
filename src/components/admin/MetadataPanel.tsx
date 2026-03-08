@@ -7,7 +7,7 @@
 import { Layout, Image as ImageIcon, DollarSign, Star, Link as LinkIcon } from "lucide-react";
 import CategorySelector from "@/components/admin/CategorySelector";
 import ResourceTypeSelector from "@/components/admin/admin-widgets/ResourceTypeSelector";
-import { CategoryOption, ResourceTypeOption, PostFormData } from "@/types/post";
+import { CategoryOption, ResourceTypeOption, PostFormData } from "@/types/admin";
 
 interface MetadataPanelProps {
   postType: "blog" | "resource";

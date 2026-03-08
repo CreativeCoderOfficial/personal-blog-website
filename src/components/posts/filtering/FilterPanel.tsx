@@ -1,6 +1,6 @@
 import { Search, Filter, X, Calendar, RotateCcw, Layers } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
-import { PostFilters } from "@/types/post";
+import { PostFilters } from "@/types/filters";
 import MultiPillFilter from "@/components/posts/filtering/MultiPillFilter"
 
 interface FilterPanelProps {

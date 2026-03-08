@@ -1,22 +1,17 @@
-// types/post.ts
+// src/types/post.ts
+//
+// Public-facing post types — used by public pages, the API route,
+// usePostFetcher, and public-facing components.
+
 import { PostType } from "@prisma/client";
 
-
-// Category type:
+// A category as it comes from the DB
 export interface Category {
   name: string;
   color: string;
 }
 
-export interface PostFilters {
-  search: string;
-  categories: string[];
-  dateFrom: string;
-  dateTo: string;
-  resourceType: string[];
-}
-
-// 1. The Base Interface
+// Base fields shared by both BlogPost and ResourcePost
 export interface BasePost {
   id: number;
   slug: string;
@@ -24,56 +19,26 @@ export interface BasePost {
   summary: string;
   readingTime: number;
   thumbnailUrl: string | null;
-  createdAt: string; // We use string because we serialize Dates from the server
+  createdAt: string; // Dates serialized to strings for Client Components
   updatedAt: string;
-  
-  // Relations
   categories: Category[];
 }
 
-// 2. The Blog Post Interface
+// Blog post — only adds the type discriminator
 export interface BlogPost extends BasePost {
-  type: "BLOG"; 
+  type: "BLOG";
 }
 
-// 3. The Resource Post Interface
-// Extends BasePost and adds resource-specific fields
+// Resource post — adds resource-specific fields on top of BasePost
 export interface ResourcePost extends BasePost {
-  type: "RESOURCE"; // Literal type! This is the "Discriminator"
+  type: "RESOURCE";
   resourceLink: string | null;
   resourceCost: number | null;
   resourceRating: number | null;
   resourceType?: { name: string } | null;
 }
 
-// 4. The Union Type
-// This is what we use in components.
-// It means "This variable is EITHER a Blog OR a Resource"
+// Union type used in components that handle both types.
+// The `type` field acts as a discriminator — TypeScript can narrow
+// from PostItem to BlogPost or ResourcePost by checking post.type
 export type PostItem = BlogPost | ResourcePost;
-
-// The shape of the controlled form state shared between PostForm,
-// MetadataPanel, and ContentEditor.
-export interface PostFormData {
-  title: string;
-  slug: string;
-  summary: string;
-  thumbnailUrl: string;
-  readingTime: string; 
-  status: "DRAFT" | "PUBLISHED";
-  categories: string[];
-  resourceType: string;
-  resourceLink: string;
-  resourceCost: string;  
-  resourceRating: string;
-}
-
-// The shape of a category coming from the DB
-export interface CategoryOption {
-  name: string;
-  color: string;
-}
-
-// The shape of a resource type coming from the DB
-export interface ResourceTypeOption {
-  name: string;
-}

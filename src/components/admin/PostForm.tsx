@@ -19,45 +19,7 @@ import { ArrowLeft, Save, CheckCircle } from "lucide-react";
 import PostTypeSelector from "@/components/admin/admin-widgets/PostTypeSelector";
 import MetadataPanel from "@/components/admin/MetadataPanel";
 import ContentEditor from "@/components/admin/ContentEditor";
-import { CategoryOption, ResourceTypeOption, PostFormData } from "@/types/post";
-
-// The shape of one content section — same as before
-interface SectionItem {
-  title: string;
-  content: string;
-  imageUrl: string;
-}
-
-// ------------------------------------------------------------
-// InitialData — the shape of a post as fetched from Prisma
-// and passed down from the edit page Server Component.
-// All fields are optional at the type level because this prop
-// is only provided in edit mode — in create mode it's undefined.
-// ------------------------------------------------------------
-export interface InitialPostData {
-  id: number;
-  title: string;
-  slug: string;
-  summary: string;
-  type: "BLOG" | "RESOURCE";
-  status: "DRAFT" | "PUBLISHED";
-  readingTime: number;
-  thumbnailUrl: string | null;
-  keyTakeaways: string[];
-  // Sections from Prisma include extra fields (id, postId, order)
-  // we only need the content fields for the form
-  sections: {
-    title: string | null;
-    content: string | null;
-    imageUrl: string | null;
-    imageDescription: string | null;
-  }[];
-  categories: { name: string }[];
-  resourceType: { name: string } | null;
-  resourceCost: number | null;
-  resourceRating: number | null;
-  resourceLink: string | null;
-}
+import type { PostFormData, SectionItem, InitialPostData, CategoryOption, ResourceTypeOption } from "@/types/admin";
 
 interface PostFormProps {
   mode: "create" | "edit";
