@@ -20,7 +20,7 @@ import ContentGrid from "@/components/posts/filtering/ContentGrid";
 import ContentCard from "@/components/posts/filtering/ContentCard";
 import { usePostFetcher } from "@/hooks/usePostFetcher";
 import { deletePost } from "@/lib/actions/posts";
-import { PostFilters, PostItem } from "@/types/post";
+import { PostItem } from "@/types/post";
 
 // Type toggle button — same style as the old mock dashboard
 function TypeButton({
