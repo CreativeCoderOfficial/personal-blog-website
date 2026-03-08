@@ -21,6 +21,7 @@ import ContentCard from "@/components/posts/filtering/ContentCard";
 import { usePostFetcher } from "@/hooks/usePostFetcher";
 import { deletePost } from "@/lib/actions/posts";
 import { PostItem } from "@/types/post";
+import LoadMoreSentinel from "../general/LoadMoreSentinel";
 
 // Type toggle button — same style as the old mock dashboard
 function TypeButton({
@@ -277,11 +278,11 @@ export default function AdminDashboardContainer({
         </ContentGrid>
 
         {/* 5. Infinite scroll sentinel — same pattern as public pages */}
-        {hasMore && (
-          <div ref={sentinelRef} className="mt-16 flex justify-center items-center h-20">
-            {isLoading && <Loader2 className="w-6 h-6 animate-spin text-text-secondary" />}
-          </div>
-        )}
+        <LoadMoreSentinel
+          hasMore={hasMore}
+          isLoading={isLoading}
+          sentinelRef={sentinelRef}
+        />
 
       </div>
     </main>

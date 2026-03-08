@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
 import { Loader2, Clock } from "lucide-react";
-// Adjust these imports to match your project structure
 import FilterPanel from "@/components/posts/filtering/FilterPanel"; 
 import ContentGrid from "@/components/posts/filtering/ContentGrid";
 import ContentCard from "@/components/posts/filtering/ContentCard";
 import { BlogPost } from "@/types/post";
 import { usePostFetcher } from "@/hooks/usePostFetcher";
+import LoadMoreSentinel from "@/components/general/LoadMoreSentinel";
 
 interface BlogListProps {
   initialPosts: BlogPost[];
@@ -32,9 +31,6 @@ export default function BlogsContainer({ initialPosts, categories }: BlogListPro
 
   return (
     <>
-      {/* We pass the setters to FilterPanel so it can update our state.
-         Note: We removed date filtering for simplicity in this step.
-      */}
       <FilterPanel 
         searchPlaceholder="Search articles..."
         filterLabel="Filter by Category"
@@ -64,25 +60,11 @@ export default function BlogsContainer({ initialPosts, categories }: BlogListPro
         ))}
       </ContentGrid>
 
-      {/* The Sentinel: A detailed loading state or invisible spacer */}
-      {hasMore && (
-        <div ref={sentinelRef} className="mt-16 flex justify-center items-center h-20">
-          {isLoading ? (
-            <div className="flex flex-col items-center gap-2 text-accent-purple">
-              <Loader2 className="w-8 h-8 animate-spin" />
-              <span className="text-sm font-medium">Loading more articles...</span>
-            </div>
-          ) : (
-            <div className="h-4 w-full" /> 
-          )}
-        </div>
-      )}
-
-      {!hasMore && posts.length > 0 && (
-        <div className="mt-16 text-center text-text-secondary opacity-60">
-          You've reached the end of the list.
-        </div>
-      )}
+     <LoadMoreSentinel
+        hasMore={hasMore}
+        isLoading={isLoading}
+        sentinelRef={sentinelRef}
+      />
     </>
   );
 }
