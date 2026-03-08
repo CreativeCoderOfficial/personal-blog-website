@@ -3,6 +3,7 @@ import { PostStatus, PostType } from "@prisma/client";
 import PageHeader from "@/components/general/PageHeader";
 import BlogsContainer from "./BlogsContainer";
 import { BlogPost } from "@/types/post";
+import PageWrapper from "@/components/general/PageWrapper";
 
 // This ensures the page is always fresh when you reload.
 // Without this, Next.js might cache the list and not show new posts immediately.
@@ -40,18 +41,11 @@ export default async function BlogsPage() {
   const categoryNames = categoriesData.map((cat) => cat.name);
 
   return (
-    <main className="min-h-screen bg-main">
-      {/* 3. Render Static Content */}
-      {/* The Header is static, so we render it here on the server */}
-      <PageHeader 
-        title={<>Blog <span className="text-accent-orange">Posts</span></>}
-        subtitle="Insights, tutorials, and thoughts on technology."
-      />
-
-      {/* 4. Hand off to Client Component */}
-      <div className="container w-full mx-auto px-6 lg:px-10 xl:px-16 2xl:px-24">
-         <BlogsContainer initialPosts={initialPosts} categories={categoryNames} />
-      </div>
-    </main>
+    <PageWrapper
+      title={<>Blog <span className="text-accent-orange">Posts</span></>}
+      subtitle="Insights, tutorials, and thoughts on technology."
+    >
+      <BlogsContainer initialPosts={initialPosts} categories={categoryNames} />
+    </PageWrapper>
   );
 }

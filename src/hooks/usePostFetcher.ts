@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { PostItem } from "@/types/post";
 import { PostType } from "@prisma/client"; 
+import { PostFilters } from "@/types/filters";
 
 // 1. Define the Input Arguments
 interface UsePostFetcherProps {
@@ -32,12 +33,12 @@ export function usePostFetcher({
 
   // Unified Filters State
   // Instead of 5 separate useStates, we group them in one object.
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<PostFilters>({
     search: "",
-    categories: [] as string[],
+    categories: [],
     dateFrom: "",
     dateTo: "",
-    resourceType: [] as string[], 
+    resourceType: [], 
   });
 
   

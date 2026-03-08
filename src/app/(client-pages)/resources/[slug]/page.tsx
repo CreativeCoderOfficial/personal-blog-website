@@ -9,7 +9,6 @@ import PostLayout from "@/components/posts/specific/PostLayout";
 import PostHeader from "@/components/posts/specific/PostHeader";
 import ContentRenderer from "@/components/posts/specific/ContentRenderer";
 import SummaryBox from "@/components/posts/specific/SummaryBox";
-import DonateBox from "@/components/posts/specific/DonateBox";
 import ResourceActionBox from "@/components/posts/specific/ResourceActionBox";
 
 
@@ -92,6 +91,8 @@ const categoryNames = post.categories.map(c => c.name);
           categories={categoryNames}
           createdAt={post.createdAt.toISOString()}
           thumbnailUrl={post.thumbnailUrl || ""}
+          backHref="/resources"
+          backLabel="Back to Resources"
         />
       }
       mobileTopContent={SidebarContent}

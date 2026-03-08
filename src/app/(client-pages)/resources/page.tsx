@@ -3,6 +3,7 @@ import { PostStatus, PostType } from "@prisma/client";
 import PageHeader from "@/components/general/PageHeader";
 import ResourcesContainer from "./ResourcesContainer";
 import { ResourcePost } from "@/types/post";
+import PageWrapper from "@/components/general/PageWrapper";
 
 export const dynamic = "force-dynamic";
 
@@ -53,19 +54,15 @@ export default async function ResourcesPage() {
   }));
 
   return (
-    <main className="min-h-screen bg-main">
-      <PageHeader 
-        title={<>Explore <span className="text-accent-orange">Resources</span></>}
-        subtitle="Curated tools and templates."
+    <PageWrapper
+      title={<>Explore <span className="text-accent-orange">Resources</span></>}
+      subtitle="Curated tools and templates."
+    >
+      <ResourcesContainer 
+        initialPosts={initialPosts} 
+        categories={categoryNames}
+        resourceTypes={resourceTypeNames} 
       />
-
-      <div className="container w-full mx-auto px-6 lg:px-10 xl:px-16 2xl:px-24">
-         <ResourcesContainer 
-           initialPosts={initialPosts} 
-           categories={categoryNames}
-           resourceTypes={resourceTypeNames} 
-         />
-      </div>
-    </main>
+    </PageWrapper>
   );
 }

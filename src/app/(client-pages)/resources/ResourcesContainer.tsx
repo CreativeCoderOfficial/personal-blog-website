@@ -6,6 +6,7 @@ import FilterPanel from "@/components/posts/filtering/FilterPanel";
 import ContentGrid from "@/components/posts/filtering/ContentGrid";
 import ContentCard from "@/components/posts/filtering/ContentCard";
 import { Loader2, Download, Layers } from "lucide-react";
+import LoadMoreSentinel from "@/components/general/LoadMoreSentinel";
 
 
 interface ResourcesContainerProps {
@@ -78,25 +79,11 @@ export default function ResourcesContainer({ initialPosts, categories,resourceTy
         })}
       </ContentGrid>
 
-      {/* The Sentinel: A detailed loading state or invisible spacer */}
-      {hasMore && (
-        <div ref={sentinelRef} className="mt-16 flex justify-center items-center h-20">
-          {isLoading ? (
-            <div className="flex flex-col items-center gap-2 text-accent-purple">
-              <Loader2 className="w-8 h-8 animate-spin" />
-              <span className="text-sm font-medium">Loading more resources...</span>
-            </div>
-          ) : (
-            <div className="h-4 w-full" /> 
-          )}
-        </div>
-      )}
-
-      {!hasMore && posts.length > 0 && (
-        <div className="mt-16 text-center text-text-secondary opacity-60">
-          End of results.
-        </div>
-      )}
+      <LoadMoreSentinel
+        hasMore={hasMore}
+        isLoading={isLoading}
+        sentinelRef={sentinelRef}
+      />
     </div>
   );
 }

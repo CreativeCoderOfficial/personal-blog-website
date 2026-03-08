@@ -7,6 +7,8 @@ interface PostHeaderProps {
   categories?: string[]; // Optional: Resources might not have them
   createdAt?: string;    // Optional
   thumbnailUrl?: string; // Optional
+  backHref?: string;  // Defaults to "/blogs"
+  backLabel?: string; // Defaults to "Back to Articles"  
 }
 
 export default function PostHeader({
@@ -14,6 +16,9 @@ export default function PostHeader({
   categories = [],
   createdAt,
   thumbnailUrl,
+  // Default values is blogs page
+  backHref = "/blogs",
+  backLabel = "Back to Articles",
 }: PostHeaderProps) {
   
   const formattedDate = createdAt 
@@ -26,11 +31,11 @@ export default function PostHeader({
     <div className="mb-10">
       {/* Back Link */}
       <Link 
-        href="/blogs"
+        href={backHref}
         className="inline-flex items-center gap-2 text-text-secondary hover:text-accent-orange mb-8 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
-        Back to Articles
+        {backLabel}
       </Link>
 
       {/* Title */}

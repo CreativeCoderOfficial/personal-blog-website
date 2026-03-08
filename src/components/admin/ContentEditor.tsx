@@ -1,10 +1,14 @@
 // src/components/admin/ContentEditor.tsx
 import { Plus, Trash2, Type, Image as ImageIcon } from "lucide-react";
 import { useState } from "react";
+import { PostFormData, SectionItem } from "@/types/admin";
+
+// Markdown preview dependencies
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
-import { PostFormData, SectionItem } from "@/types/admin";
+import { markdownComponents, markdownProseClasses } from "@/lib/markdownConfig";
+import AdminInput from "./admin-widgets/AdminInput";
 
 interface ContentEditorProps {
   formData: PostFormData;
@@ -104,12 +108,12 @@ export default function ContentEditor({
               <div className="w-6 h-6 rounded-full bg-accent-purple/10 text-accent-purple flex items-center justify-center text-xs font-bold mt-2 shrink-0">
                 {idx + 1}
               </div>
-              <input
+              <AdminInput
                 type="text"
                 value={item}
                 onChange={(e) => handleTakeawayChange(idx, e.target.value)}
-                className="flex-1 bg-main/30 border border-border-subtle rounded-lg px-3 py-2 text-sm focus:border-accent-purple outline-none"
                 placeholder="Key point..."
+                className="flex-1 bg-main/30"
               />
               <button
                 type="button"
@@ -193,38 +197,17 @@ export default function ContentEditor({
                 {previewSections.has(idx) ? (
                   // Preview mode — renders the markdown using the same prose classes
                   // as ContentRenderer.tsx so the preview matches the published post exactly
-                  <div className="
-                    min-h-[120px] px-4 py-3 rounded-xl border border-border-subtle bg-main/50
-                    prose prose-invert max-w-none
-                    prose-headings:text-text-primary prose-p:text-text-secondary
-                    prose-a:text-accent-purple prose-strong:text-text-primary
-                    prose-code:text-accent-orange prose-code:bg-accent-orange/10
-                    prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md
-                    prose-code:before:content-none prose-code:after:content-none
-                  ">
+                  <div className={`min-h-[120px] px-4 py-3 rounded-xl border border-border-subtle bg-main/50 ${markdownProseClasses}`}>
                     {section.content
-                      ? <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]} 
-                      components={{
-                      // Force Unordered Lists to have visible bullets
-                      ul: ({...props}) => <ul className="list-disc pl-6 space-y-2 my-4 text-text-secondary marker:text-accent-purple" {...props} />,
-                      
-                      // Force Ordered Lists to have visible numbers
-                      ol: ({...props}) => <ol className="list-decimal pl-6 space-y-2 my-4 text-text-secondary marker:text-accent-purple" {...props} />,
-                      
-                      // Force List Items to behave
-                      li: ({...props}) => <li className="pl-1" {...props} />,
-
-                      // Force Blockquotes to look nice
-                      blockquote: ({...props}) => (
-                        <blockquote className="border-l-4 border-accent-purple bg-accent-purple/5 px-4 py-2 rounded-r-lg not-italic my-6 text-text-secondary" {...props} />
-                      ),
-
-                      h1: ({...props}) => <h1 className="text-3xl md:text-4xl font-extrabold text-text-primary mt-12 mb-6" {...props} />,
-                      h2: ({...props}) => <h2 className="text-2xl md:text-3xl font-bold text-text-primary mt-10 mb-5" {...props} />,
-                      h3: ({...props}) => <h3 className="text-xl md:text-2xl font-bold text-text-primary mt-8 mb-4" {...props} />,
-                      h4: ({...props}) => <h4 className="text-lg md:text-xl font-bold text-text-primary mt-6 mb-3" {...props} />,
-                    }}
-                      >{section.content}</ReactMarkdown>
+                      ? (
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          rehypePlugins={[rehypeHighlight]}
+                          components={markdownComponents}
+                        >
+                          {section.content}
+                        </ReactMarkdown>
+                      )
                       : <p className="text-text-secondary/40 italic text-sm">Nothing to preview yet...</p>
                     }
                   </div>
