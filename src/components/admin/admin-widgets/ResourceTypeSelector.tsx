@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Plus, Loader2, Check } from "lucide-react";
 import { createResourceType } from "@/lib/actions/posts";
 import type { ResourceTypeOption } from "@/types/admin";
+import AdminInput from "./AdminInput";
 
 interface ResourceTypeSelectorProps {
   // Full list of available resource types — grows when admin creates new ones
@@ -140,12 +141,12 @@ export default function ResourceTypeSelector({
       {showNewForm ? (
         <div className="p-3 rounded-xl bg-main border border-border-subtle space-y-3">
 
-          <input
+          <AdminInput
             type="text"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             placeholder="e.g. Video, E-Book, Tool..."
-            className="w-full bg-transparent border border-border-subtle rounded-lg px-3 py-2 text-sm focus:border-accent-orange outline-none text-text-primary"
+            className="bg-transparent focus:border-accent-orange"
             // Allow submitting with Enter key for convenience —
             // but we call handleCreate directly, not form submit,
             // so the parent post form is never accidentally triggered

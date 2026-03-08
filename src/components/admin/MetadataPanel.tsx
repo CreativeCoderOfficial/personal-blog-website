@@ -8,6 +8,7 @@ import { Layout, Image as ImageIcon, DollarSign, Star, Link as LinkIcon } from "
 import CategorySelector from "@/components/admin/CategorySelector";
 import ResourceTypeSelector from "@/components/admin/admin-widgets/ResourceTypeSelector";
 import { CategoryOption, ResourceTypeOption, PostFormData } from "@/types/admin";
+import AdminInput from "./admin-widgets/AdminInput";
 
 interface MetadataPanelProps {
   postType: "blog" | "resource";
@@ -39,12 +40,11 @@ export default function MetadataPanel({
       {/* URL Slug */}
       <div className="space-y-1">
         <label className="text-xs text-text-secondary font-semibold">URL Slug</label>
-        <input
+        <AdminInput
           type="text"
           value={formData.slug}
           onChange={(e) => handleChange("slug", e.target.value)}
           placeholder="e.g. my-new-post"
-          className="w-full bg-main border border-border-subtle rounded-lg px-3 py-2 text-sm focus:border-accent-purple outline-none"
         />
       </div>
 
@@ -66,12 +66,11 @@ export default function MetadataPanel({
       <div className="space-y-1">
         <label className="text-xs text-text-secondary font-semibold">Thumbnail URL</label>
         <div className="flex gap-2">
-          <input
+          <AdminInput
             type="text"
             value={formData.thumbnailUrl}
             onChange={(e) => handleChange("thumbnailUrl", e.target.value)}
             placeholder="https://..."
-            className="w-full bg-main border border-border-subtle rounded-lg px-3 py-2 text-sm focus:border-accent-purple outline-none"
           />
           <div className="p-2 bg-main border border-border-subtle rounded-lg">
             <ImageIcon className="w-5 h-5 text-text-secondary" />
@@ -84,11 +83,11 @@ export default function MetadataPanel({
         <label className="text-xs text-text-secondary font-semibold">
           Reading Time (minutes)
         </label>
-        <input
+       <AdminInput
           type="number"
           value={formData.readingTime}
           onChange={(e) => handleChange("readingTime", e.target.value)}
-          className="w-full bg-main border border-border-subtle rounded-lg px-3 py-2 text-sm focus:border-accent-purple outline-none"
+          placeholder="e.g. 5"
         />
       </div>
 
@@ -134,12 +133,12 @@ export default function MetadataPanel({
             </label>
             <div className="flex gap-2 items-center">
               <LinkIcon className="w-4 h-4 text-text-secondary shrink-0" />
-              <input
+              <AdminInput
                 type="text"
                 value={formData.resourceLink}
                 onChange={(e) => handleChange("resourceLink", e.target.value)}
                 placeholder="https://..."
-                className="w-full bg-main border border-border-subtle rounded-lg px-3 py-2 text-sm focus:border-accent-orange outline-none"
+                className="focus:border-accent-orange"
               />
             </div>
           </div>
@@ -149,12 +148,12 @@ export default function MetadataPanel({
             <label className="text-xs text-text-secondary font-semibold">Cost (€)</label>
             <div className="flex gap-2 items-center">
               <DollarSign className="w-4 h-4 text-text-secondary shrink-0" />
-              <input
+              <AdminInput
                 type="number"
                 value={formData.resourceCost}
                 onChange={(e) => handleChange("resourceCost", e.target.value)}
                 placeholder="0 for free"
-                className="w-full bg-main border border-border-subtle rounded-lg px-3 py-2 text-sm focus:border-accent-orange outline-none"
+                className="focus:border-accent-orange"
               />
             </div>
           </div>
@@ -166,7 +165,7 @@ export default function MetadataPanel({
             </label>
             <div className="flex gap-2 items-center">
               <Star className="w-4 h-4 text-text-secondary shrink-0" />
-              <input
+              <AdminInput
                 type="number"
                 value={formData.resourceRating}
                 onChange={(e) => handleChange("resourceRating", e.target.value)}
@@ -174,7 +173,7 @@ export default function MetadataPanel({
                 max="5"
                 step="0.1"
                 placeholder="e.g. 4.5"
-                className="w-full bg-main border border-border-subtle rounded-lg px-3 py-2 text-sm focus:border-accent-orange outline-none"
+                className="focus:border-accent-orange"
               />
             </div>
           </div>

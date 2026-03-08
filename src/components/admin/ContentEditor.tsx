@@ -8,6 +8,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import { markdownComponents, markdownProseClasses } from "@/lib/markdownConfig";
+import AdminInput from "./admin-widgets/AdminInput";
 
 interface ContentEditorProps {
   formData: PostFormData;
@@ -107,12 +108,12 @@ export default function ContentEditor({
               <div className="w-6 h-6 rounded-full bg-accent-purple/10 text-accent-purple flex items-center justify-center text-xs font-bold mt-2 shrink-0">
                 {idx + 1}
               </div>
-              <input
+              <AdminInput
                 type="text"
                 value={item}
                 onChange={(e) => handleTakeawayChange(idx, e.target.value)}
-                className="flex-1 bg-main/30 border border-border-subtle rounded-lg px-3 py-2 text-sm focus:border-accent-purple outline-none"
                 placeholder="Key point..."
+                className="flex-1 bg-main/30"
               />
               <button
                 type="button"

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Plus, Loader2, Check } from "lucide-react";
 import { createCategory } from "@/lib/actions/posts";
 import { CategoryOption } from "@/types/admin";
+import AdminInput from "./admin-widgets/AdminInput";
 
 interface CategorySelectorProps {
   options: CategoryOption[];
@@ -114,12 +115,12 @@ export default function CategorySelector({
       {/* New Category Form*/}
       {showNewForm ? (
         <div className="p-3 rounded-xl bg-main border border-border-subtle space-y-3">
-          <input
+         <AdminInput
             type="text"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             placeholder="Category name..."
-            className="w-full bg-transparent border border-border-subtle rounded-lg px-3 py-2 text-sm focus:border-accent-purple outline-none text-text-primary"
+            className="bg-transparent"
           />
 
           <div className="flex items-center gap-3">
