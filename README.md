@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Personal Blog Website
 
-## Getting Started
+## Description
 
-First, run the development server:
+This is my personal blog website built with Next.js, featuring a modern, responsive design. I'm using it for as my personal site for `maxxed-out.me` but feel free to use this as a template for your own project!
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The site includes:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Homepage**: Hero section, about, features, resource showcase, and contact information
+- **Blogs**: Collection of blog posts with filtering and search capabilities
+- **Resources**: Curated resources with different types and categories
+- **About**: Personal information and background
+- **Support**: Donation system integrated with Stripe for supporting the creator
+- **Admin Panel**: Secure dashboard for managing posts, categories, and content
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Some functionalities:
+- Rich markdown content rendering & syntax highlighting
+- Extensive search & filtering
+- Dynamic fetching
+- Secure payment options
+- An entire Content Management System
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Technologies Used
 
-## Learn More
+- **Framework**: Next.js 16 with App Router
+- **Frontend**: React 19, TypeScript
+- **Styling**: Tailwind CSS 4 with Typography plugin
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: NextAuth.js
+- **Payments**: Stripe for donation processing
+- **Content Rendering**: React Markdown with rehype-highlight for code syntax highlighting
+- **Icons**: Lucide React
+- **Validation**: Zod
+- **Other**: bcryptjs for password hashing, rate limiting
 
-To learn more about Next.js, take a look at the following resources:
+## Setup Instructions
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Prerequisites
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Node.js (version 18 or higher)
+- PostgreSQL database
+- Stripe account (for donations)
 
-## Deploy on Vercel
+### Installation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd personal-blog-website
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**:
+
+   Create a `.env.local` file in the root directory with the following variables:
+   ```env
+   # Database
+   DATABASE_URL="postgresql://username:password@localhost:5432/blog_db"
+
+   # NextAuth
+   NEXTAUTH_SECRET="your-secret-key"
+   NEXTAUTH_URL="http://localhost:3000"
+
+   # Stripe
+   STRIPE_PUBLISHABLE_KEY="pk_test_..."
+   STRIPE_SECRET_KEY="sk_test_..."
+   STRIPE_WEBHOOK_SECRET="whsec_..."
+
+   # Other optional configs
+   ```
+
+4. **Set up the database**:
+
+   - Ensure PostgreSQL is running
+   - Run Prisma migrations:
+     ```bash
+     npx prisma migrate dev
+     ```
+   - Seed the database (if available):
+     ```bash
+     npx prisma db seed
+     ```
+
+5. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
