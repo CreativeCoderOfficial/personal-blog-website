@@ -18,7 +18,7 @@ export default function Header() {
     { href: "/", label: "Home" },
     { href: "/resources", label: "Resources" },
     { href: "/blogs", label: "Blogs" },
-    { href: "/support", label: "My Channel" },
+    { href: "/support", label: "Support" },
   ];
 
   return (

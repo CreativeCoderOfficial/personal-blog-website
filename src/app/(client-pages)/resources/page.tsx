@@ -56,7 +56,7 @@ export default async function ResourcesPage() {
   return (
     <PageWrapper
       title={<>Explore <span className="text-accent-orange">Resources</span></>}
-      subtitle="Curated tools and templates."
+      subtitle="Tools, apps, templates & more to elevate your life. I test & review the best privacy-friendly & affordable options and document how useful they are!"
     >
       <ResourcesContainer 
         initialPosts={initialPosts} 
