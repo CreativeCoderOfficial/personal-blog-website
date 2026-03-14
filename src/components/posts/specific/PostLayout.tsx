@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import DonateBox from "@/components/general/DonateBox";
+import DonateBox from "@/components/support/DonateBox";
 
 interface PostLayoutProps {
   header: ReactNode;         // The PostHeader component

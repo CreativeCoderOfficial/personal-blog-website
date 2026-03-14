@@ -1,15 +1,12 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Metadata } from "next";
-import ReactMarkdown from "react-markdown";
-import Image from "next/image";
 
 // --- CUSTOM COMPONENTS ---
 import PostLayout from "@/components/posts/specific/PostLayout";
 import PostHeader from "@/components/posts/specific/PostHeader";
 import ContentRenderer from "@/components/posts/specific/ContentRenderer";
 import SummaryBox from "@/components/posts/specific/SummaryBox";
-import DonateBox from "@/components/posts/specific/DonateBox";
 
 // Rerender the Server-side component every week (should be okay, since once posted, the post won't change normally )
 export const revalidate = 7 * 24 * 60 * 60; 
