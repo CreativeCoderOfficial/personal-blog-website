@@ -10,6 +10,7 @@
 //      complete the payment — our server never touches raw card data.
 //
 
+import { checkRateLimit, getIp } from "@/lib/rateLimit";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -29,6 +30,16 @@ const MAX_AMOUNT_EUR = 1000;
 // POST /api/donations/create-payment-intent
 // ─────────────────────────────────────────────────────────────
 export async function POST(request: Request) {
+
+  // Rate limiting check
+  const ip = getIp(request);
+  if (checkRateLimit(ip)) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait a few minutes and try again." },
+      { status: 429 }
+    );
+  }
+  
   try {
     // ── Step 1: Parse the request body ──────────────────────
     // We expect something like: { "amount": 10 }
