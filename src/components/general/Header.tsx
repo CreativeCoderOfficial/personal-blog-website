@@ -42,7 +42,7 @@ export default function Header() {
           from-orange-600 to-pink-500
         "
       >
-        Portofolio
+        Maxxed Out
       </Link>
 
       {/* --- DESKTOP NAVIGATION --- */}

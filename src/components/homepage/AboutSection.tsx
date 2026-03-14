@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { Github, Twitter, Linkedin, ArrowRight } from "lucide-react";
+import { Github, Twitter, Linkedin, ArrowRight, Youtube } from "lucide-react";
 import LineMarker from "../ui/LineMarker";
 
 export default function AboutSection() {
   return (
-    <section className="relative bg-main">
+    <section id="about" className="relative bg-main">
       {/* 1. The Line Marker (Top Boundary) */}
       <LineMarker />
 
@@ -38,10 +38,6 @@ export default function AboutSection() {
           </div>
 
           {/* TEXT CONTENT */}
-          <h2 className="text-sm font-bold tracking-widest text-accent-purple uppercase mb-4">
-            Meet the Creator
-          </h2>
-          
           <h3 className="text-3xl md:text-4xl font-bold text-text-primary mb-6">
             Hi, I'm Max. <br className="hidden md:block" />
             <span className="text-text-secondary font-normal">I build things for the web.</span>
@@ -49,35 +45,17 @@ export default function AboutSection() {
 
           <p className="text-text-secondary text-lg leading-relaxed mb-10">
             I'm a Full Stack Developer passionate about bridging the gap between design and engineering. 
-            When I'm not coding, I write about my journey and share resources to help others level up their skills.
+            When I'm not coding, I learn about neuroscience, producitivity & business.
+            I then try to write about my journey and share resources to help others level up in life.
           </p>
 
           {/* SOCIALS & CTA */}
           <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-            
-            <Link 
-              href="/about"
-              className="
-                group
-                flex items-center gap-2
-                px-6 py-3 rounded-full
-                bg-white/5 hover:bg-white/10
-                border border-border-subtle hover:border-text-secondary/30
-                text-text-primary font-medium
-                transition-all
-              "
-            >
-              More about me
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-
-            {/* Social Icons Divider (Vertical line on desktop) */}
-            <div className="hidden md:block w-px h-8 bg-border-subtle mx-2" />
 
             <div className="flex gap-4">
-              <SocialLink href="https://github.com" icon={<Github className="w-5 h-5" />} label="GitHub" />
-              <SocialLink href="https://twitter.com" icon={<Twitter className="w-5 h-5" />} label="Twitter" />
-              <SocialLink href="https://linkedin.com" icon={<Linkedin className="w-5 h-5" />} label="LinkedIn" />
+              <SocialLink href="https://github.com/CreativeCoderOfficial" icon={<Github className="w-5 h-5" />} label="GitHub" />
+              <SocialLink href="https://www.youtube.com/@max_fromthemountain" icon={<Youtube className="w-5 h-5" />} label="YouTube" />
+              <SocialLink href="https://www.linkedin.com/in/max-thomas-van-den-berg" icon={<Linkedin className="w-5 h-5" />} label="LinkedIn" />
             </div>
 
           </div>

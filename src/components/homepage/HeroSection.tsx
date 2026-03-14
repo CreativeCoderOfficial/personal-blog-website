@@ -59,11 +59,11 @@ export default function Hero() {
               font-bold tracking-tight text-text-primary 
               leading-tight mb-6 2xl:mb-10
             ">
-              Building digital <br />
+              Reaching your <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-orange to-accent-pink">
-                experiences
+                elevated
               </span>
-              <br /> that matter.
+              <br /> potential.
             </h1>
 
             <p className="
@@ -74,7 +74,8 @@ export default function Hero() {
               mb-8 2xl:mb-12 
               leading-relaxed
             ">
-              I'm Max, a Full Stack Developer. I combine technical expertise with creative design to build scalable, user-centric web applications.
+              I'm Max, a Full Stack Developer & Content Creator. I'm deeply passionate about productivity, health, tech & entrepreneurship. 
+              My aim is to explore & create an elevated system to help you unlock your full potential!
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -97,7 +98,7 @@ export default function Hero() {
               </Link>
               
               <Link 
-                href="/about"
+                href="/#about"
                 className="
                   px-8 py-3 lg:px-8 lg:py-4 2xl:px-12 2xl:py-6
                   rounded-full font-bold text-text-primary 
@@ -193,20 +194,6 @@ export default function Hero() {
                 className="w-full h-full object-cover"
               />
             </div>
-
-            {/* DECORATIVE BADGE */}
-            <div className="
-              absolute 
-              bottom-12 right-0 
-              lg:bottom-20 lg:right-0
-              2xl:bottom-24 2xl:right-8
-              z-30 animate-bounce
-              bg-card backdrop-blur-md border border-border-subtle
-              p-3 2xl:p-5 rounded-xl shadow-lg
-            ">
-              <span className="text-2xl 2xl:text-4xl">🚀</span>
-            </div>
-
           </div>
         </div>
       </div>

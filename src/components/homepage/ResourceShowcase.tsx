@@ -1,5 +1,10 @@
 import { CheckCircle, ArrowRight, Book } from "lucide-react";
 
+// TODO:
+/* 
+  Finish ebook & email capture logic
+*/
+
 export default function ResourceShowcase() {
   return (
     <section className="py-24 relative overflow-hidden">
@@ -86,6 +91,7 @@ export default function ResourceShowcase() {
               bg-card border border-border-subtle
               backdrop-blur-sm
             ">
+              
               <p className="text-sm text-text-secondary mb-4 font-medium">
                 Get your free copy delivered to your inbox:
               </p>
@@ -103,7 +109,7 @@ export default function ResourceShowcase() {
                     focus:outline-none focus:border-accent-purple focus:ring-1 focus:ring-accent-purple
                     transition-all
                   "
-                />
+                /> 
                 <button 
                   type="button" // Change to 'submit' when you add logic
                   className="

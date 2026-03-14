@@ -52,16 +52,15 @@ export default function ConnectSection() {
 
               {/* Project Details */}
               <h3 className="text-xl font-bold text-text-primary mb-2">
-                SaaS Analytics Dashboard
+                 Personalised Housing Feed Automation
               </h3>
               <p className="text-text-secondary text-sm mb-6 leading-relaxed">
-                Building a privacy-first analytics tool for developer blogs. 
-                Currently working on the real-time data ingestion pipeline using Next.js and Supabase.
+                Building an n8n workflow to automatically fetch and filter housing listings from various platforms, delivering personalized updates straight to my WhatsApp.
               </p>
 
               {/* Tech Stack Pills */}
               <div className="flex flex-wrap gap-2">
-                {["Next.js", "TypeScript", "Supabase", "Tailwind"].map((tech) => (
+                {["n8n", "TypeScript", "Playwright", "Agentic AI"].map((tech) => (
                   <span 
                     key={tech} 
                     className="px-2 py-1 text-xs rounded-md bg-white/5 text-text-secondary border border-border-subtle"
@@ -84,14 +83,14 @@ export default function ConnectSection() {
             </h2>
             
             <p className="text-text-secondary text-lg mb-8 leading-relaxed max-w-lg">
-              Have a question about the ebook? Want to collaborate on a project? 
+              Have a question about my channel? Want to collaborate on a project? 
               Or just want to say hi? My inbox is always open.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
               {/* Primary Action */}
               <Link 
-                href="/contact"
+                href="mailto:creativecoder.official@outlook.com"
                 className="
                   inline-flex items-center justify-center gap-2
                   px-8 py-3 rounded-md font-semibold text-white
@@ -105,7 +104,9 @@ export default function ConnectSection() {
 
               {/* Secondary Action */}
               <Link 
-                href="/projects"
+                href="https://github.com/CreativeCoderOfficial"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="
                   inline-flex items-center justify-center gap-2
                   px-8 py-3 rounded-md font-semibold text-text-primary

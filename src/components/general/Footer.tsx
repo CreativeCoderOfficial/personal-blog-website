@@ -25,7 +25,7 @@ export default function Footer() {
             /* Gradient using your brand accent tokens */
             bg-gradient-to-r from-accent-orange to-accent-pink
           ">
-            My Portfolio
+            Maxxed Out
           </h3>
           <p className="mt-4 text-text-secondary max-w-sm">
             Creating content and sharing knowledge through blogs and resources.
@@ -43,7 +43,7 @@ export default function Footer() {
             <li><Link href="/" className="hover:text-text-primary transition-colors">Home</Link></li>
             <li><Link href="/resources" className="hover:text-text-primary transition-colors">Resources</Link></li>
             <li><Link href="/blogs" className="hover:text-text-primary transition-colors">Blogs</Link></li>
-            <li><Link href="/donate" className="hover:text-text-primary transition-colors">Donate</Link></li>
+            <li><Link href="/support" className="hover:text-text-primary transition-colors">Support</Link></li>
           </ul>
         </div>
 
@@ -54,17 +54,22 @@ export default function Footer() {
           </h4>
           <ul className="space-y-3 text-text-secondary">
             <li>
-              <a href="mailto:your@email.com" className="hover:text-text-primary transition-colors">
+              <a href="mailto:creativecoder.official@gmail.com" className="hover:text-text-primary transition-colors">
                 Email
               </a>
             </li>
             <li>
-              <a href="https://twitter.com" target="_blank" className="hover:text-text-primary transition-colors">
-                Twitter
+              <a href="https://www.youtube.com/@max_fromthemountain" target="_blank" className="hover:text-text-primary transition-colors">
+                Youtube Channel
+              </a>
+            </li>
+                        <li>
+              <a href="https://www.linkedin.com/in/max-thomas-van-den-berg" target="_blank" className="hover:text-text-primary transition-colors">
+                Linkedin
               </a>
             </li>
             <li>
-              <a href="https://github.com" target="_blank" className="hover:text-text-primary transition-colors">
+              <a href="https://github.com/CreativeCoderOfficial" target="_blank" className="hover:text-text-primary transition-colors">
                 GitHub
               </a>
             </li>
@@ -78,7 +83,7 @@ export default function Footer() {
         py-6 text-center
         text-text-secondary opacity-60
       ">
-        © {new Date().getFullYear()} My Portfolio. All rights reserved.
+        © {new Date().getFullYear()} Maxxed Out. All rights reserved.
       </div>
     </footer>
   );
