@@ -15,8 +15,13 @@ async function main() {
   // --------------------------------------------------------
   // 1. ADMIN USER
   // --------------------------------------------------------
-  const passwordRaw = process.env.MOCK_PASSWORD || 'admin123';
-  const usernameRaw = process.env.MOCK_USERNAME || 'admin';
+  const passwordRaw = process.env.ADMIN_PASSWORD;
+  const usernameRaw = process.env.ADMIN_USERNAME;
+
+  if (!passwordRaw || !usernameRaw) {
+    throw new Error("CRITICAL: Missing ADMIN_USERNAME or ADMIN_PASSWORD in .env");
+  }
+
   const hashedPw = await bcrypt.hash(passwordRaw, 10)
   
   await prisma.adminUser.upsert({
@@ -38,6 +43,8 @@ async function main() {
   ]
 
   for (const cat of categoryData) {
+    // Make sure everything in lower case to avoid "tech" & "Tech" both stored in the DB
+    const normalizedName = cat.name.toLowerCase();
     await prisma.category.upsert({
       where: { name: cat.name },
       update: { color: cat.color },
@@ -50,6 +57,7 @@ async function main() {
   // --------------------------------------------------------
   const resourceTypeNames = ['App', 'Video', 'Tool', 'E-Book', 'Course']
   for (const name of resourceTypeNames) {
+    const normalizedResourceName = name.toLowerCase();
     await prisma.resourceType.upsert({
       where: { name },
       update: {},
