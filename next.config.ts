@@ -8,11 +8,6 @@ const nextConfig: NextConfig = {
       { hostname: 'picsum.photos' },
       { hostname: 'covers.openlibrary.org' },
     ],
-    localPatterns: [
-      {
-        pathname: "/uploads/**", // ** matches any subfolder depth and filename
-      },
-    ],
   },
 };
 
