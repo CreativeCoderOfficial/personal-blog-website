@@ -9,6 +9,7 @@ import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import { markdownComponents, markdownProseClasses } from "@/lib/markdownConfig";
 import AdminInput from "./admin-widgets/AdminInput";
+import ImageUploader from "./admin-widgets/ImageUploader";
 
 interface ContentEditorProps {
   formData: PostFormData;
@@ -17,12 +18,14 @@ interface ContentEditorProps {
   setTakeaways: (data: string[]) => void;
   sections: SectionItem[];    
   setSections: (data: SectionItem[]) => void;
+  postType: "blog" | "resource";
 }
 
 export default function ContentEditor({ 
   formData, setFormData, 
   takeaways, setTakeaways, 
   sections, setSections,
+  postType,
 }: ContentEditorProps) {
 
   // --- Helpers for Takeaways ---
@@ -233,6 +236,15 @@ export default function ContentEditor({
                     placeholder="Optional Image URL for this section..."
                     className="w-full bg-main/50 rounded-lg border border-border-subtle/50 px-3 py-2 text-xs text-text-secondary focus:border-accent-purple outline-none"
                   />
+
+                  {/* Each section gets its own ImageUploader so with role section-0, section-1, etc...*/}
+                  <ImageUploader
+                    slug={formData.slug}
+                    postType={postType}
+                    role={`section-${idx}`}
+                    onUpload={(url) => handleSectionChange(idx, "imageUrl", url)}
+                  />
+
                 </div>
               </div>
             </div>

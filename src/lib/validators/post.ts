@@ -18,7 +18,7 @@ export const sectionSchema = z.object({
   // .optional() means the field can be undefined (not provided at all)
   content: z.string().optional(),
 
-  imageUrl: z.url("Must be a valid URL").optional().or(z.literal("")),
+  imageUrl: z.string().optional().or(z.literal("")),
   // ^ .or(z.literal("")) allows empty string in addition to a valid URL or undefined.
   //   This is important because the form initializes imageUrl as ""
 
@@ -52,7 +52,7 @@ export const createPostSchema = z.object({
   // This is important because HTML inputs always return strings — even type="number".
   // .int() ensures it's a whole number (no decimals)
 
-  thumbnailUrl: z.url("Must be a valid URL").optional().or(z.literal("")),
+  thumbnailUrl: z.string().optional().or(z.literal("")),
 
   // --- Content fields ---
 

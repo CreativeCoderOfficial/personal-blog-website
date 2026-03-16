@@ -196,6 +196,7 @@ export default function PostForm({
               setTakeaways={setTakeaways}
               sections={sections}
               setSections={setSections}
+              postType={postType}
             />
 
             {/* Submit Button */}
