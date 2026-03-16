@@ -9,6 +9,7 @@ import CategorySelector from "@/components/admin/CategorySelector";
 import ResourceTypeSelector from "@/components/admin/admin-widgets/ResourceTypeSelector";
 import { CategoryOption, ResourceTypeOption, PostFormData } from "@/types/admin";
 import AdminInput from "./admin-widgets/AdminInput";
+import ImageUploader from "./admin-widgets/ImageUploader";
 
 interface MetadataPanelProps {
   postType: "blog" | "resource";
@@ -72,9 +73,13 @@ export default function MetadataPanel({
             onChange={(e) => handleChange("thumbnailUrl", e.target.value)}
             placeholder="https://..."
           />
-          <div className="p-2 bg-main border border-border-subtle rounded-lg">
-            <ImageIcon className="w-5 h-5 text-text-secondary" />
-          </div>
+          {/* ImageUploader*/}
+          <ImageUploader
+            slug={formData.slug}
+            postType={postType}
+            role="thumbnail"
+            onUpload={(url) => handleChange("thumbnailUrl", url)}
+          />
         </div>
       </div>
 
