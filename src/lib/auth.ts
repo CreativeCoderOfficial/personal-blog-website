@@ -19,7 +19,9 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  
+
+  trustHost: true, // Required in v5 — tells Auth.js to trust the incoming host header
+
   providers: [
     // "Providers" tell NextAuth what login methods are available
     // We only use credentials (username + password) (and not things like Google or GitHub OAuth)

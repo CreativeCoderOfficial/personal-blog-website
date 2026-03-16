@@ -13,7 +13,7 @@ import ResourceActionBox from "@/components/posts/specific/ResourceActionBox";
 
 
 // --- CONFIGURATION ---
-export const revalidate = 3600; 
+export const revalidate = 604800; 
 
 interface PageProps {
   params: Promise<{ slug: string }>;

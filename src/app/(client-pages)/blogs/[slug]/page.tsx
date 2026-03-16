@@ -9,7 +9,7 @@ import ContentRenderer from "@/components/posts/specific/ContentRenderer";
 import SummaryBox from "@/components/posts/specific/SummaryBox";
 
 // Rerender the Server-side component every week (should be okay, since once posted, the post won't change normally )
-export const revalidate = 7 * 24 * 60 * 60; 
+export const revalidate = 604800; 
 // Next.js 15 introduced a change where dynamic route params are now passed as Promises to support async data fetching at the page level.
 // This means that instead of receiving `params` as a plain object, we now receive it as a Promise that resolves to the params object.
 interface PageProps {

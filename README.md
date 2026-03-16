@@ -62,8 +62,8 @@ Some functionalities:
    DATABASE_URL="postgresql://username:password@localhost:5432/blog_db"
 
    # NextAuth
-   NEXTAUTH_SECRET="your-secret-key"
-   NEXTAUTH_URL="http://localhost:3000"
+   AUTH_SECRET="your-secret-key"
+   AUTH_URL="http://localhost:3000"
 
    # Stripe
    STRIPE_PUBLISHABLE_KEY="pk_test_..."
