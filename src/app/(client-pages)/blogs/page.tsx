@@ -43,7 +43,7 @@ export default async function BlogsPage() {
   return (
     <PageWrapper
       title={<>Blog <span className="text-accent-orange">Posts</span></>}
-      subtitle="Insights, tutorials, and thoughts on technology."
+      subtitle="Insights, tutorials, and thoughts on technology, productivity, and personal development."
     >
       <BlogsContainer initialPosts={initialPosts} categories={categoryNames} />
     </PageWrapper>

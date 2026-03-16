@@ -4,18 +4,18 @@ import { BookOpen, Link as LinkIcon, Lightbulb } from "lucide-react";
 export default function FeatureSection() {
   const features = [
     {
-      title: "Articles & Blogs",
-      description: "Thoughtfully written articles covering topics I'm passionate about.",
+      title: "Blogs",
+      description: "Thoughtfully written articles covering topics I'm passionate about. Especially on how to maximize your potential!",
       icon: <BookOpen className="w-6 h-6 text-accent-pink" />, // Using pink accent
     },
     {
       title: "Resources",
-      description: "Curated collection of tools, links, and materials for learning.",
+      description: "Curated collection of privacy-friendly & affordable tools, apps and materials for productivity, health & learning.",
       icon: <LinkIcon className="w-6 h-6 text-accent-purple" />, // Using purple accent
     },
     {
       title: "Knowledge Sharing",
-      description: "Insights and lessons learned from my professional journey.",
+      description: "Insights and lessons learned from my personal and professional journey.",
       icon: <Lightbulb className="w-6 h-6 text-accent-orange" />, // Using orange accent
     },
   ];

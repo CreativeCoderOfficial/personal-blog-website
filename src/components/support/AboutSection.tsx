@@ -1,5 +1,6 @@
-import { Youtube, Twitter, Linkedin, Instagram, ArrowRight } from "lucide-react";
+import { Youtube, Linkedin, } from "lucide-react";
 import Link from "next/link";
+
 
 export default function AboutSection() {
   return (
@@ -11,7 +12,7 @@ export default function AboutSection() {
           Fueling the <span className="text-accent-orange">Mission</span>
         </h2>
         <p className="text-lg text-text-secondary leading-relaxed">
-          Creating high-quality tutorials and open-source resources takes time, coffee, and server costs. Your support keeps this ship sailing.
+          Creating high-quality tutorials and resources takes time, coffee, and server costs. Your support helps me continue.
         </p>
       </div>
 
@@ -19,10 +20,12 @@ export default function AboutSection() {
       <div className="space-y-6 mb-10 p-6 rounded-2xl bg-card/30 border border-border-subtle">
         <h3 className="text-xl font-bold text-text-primary">My Journey</h3>
         <p className="text-text-secondary leading-relaxed">
-          I started this channel with a simple goal: to make complex tech topics accessible to everyone. From my first shaky video on React hooks to now building full-stack architectures, it's been a wild ride.
+          I started this channel with a simple goal: give people the same system that helped me build an elevated mindset.
+          It all started when I managed to graduate early from high school completing 2 different exams systems at the same time.
+          I realised I had built a consistent framework, set of habits & empowering mindset that made me productive as hell while still enjoying life.
         </p>
         <p className="text-text-secondary leading-relaxed">
-          My mission is to empower 100,000 developers to build their dream projects without getting stuck in tutorial hell.
+          I want you to feel the same & reach your full potential too!
         </p>
       </div>
 
@@ -32,10 +35,16 @@ export default function AboutSection() {
           Follow the Journey
         </h3>
         <div className="flex flex-wrap gap-4">
-          <SocialLink href="#" icon={<Youtube className="w-5 h-5" />} label="YouTube" />
-          <SocialLink href="#" icon={<Twitter className="w-5 h-5" />} label="Twitter" />
-          <SocialLink href="#" icon={<Linkedin className="w-5 h-5" />} label="LinkedIn" />
-          <SocialLink href="#" icon={<Instagram className="w-5 h-5" />} label="Instagram" />
+          <SocialLink href="https://www.youtube.com/@max_fromthemountain" icon={<Youtube className="w-5 h-5" />} label="YouTube" />
+          <SocialLink href="https://www.linkedin.com/in/max-thomas-van-den-berg" icon={<Linkedin className="w-5 h-5" />} label="LinkedIn" />
+          <a 
+            href="https://open.spotify.com/show/01HqbxH64SLgcePBY8LVwz?si=X6eC71AkTcGXqTRXdfBC_A" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-main border border-border-subtle text-text-secondary hover:text-white hover:border-accent-purple hover:bg-accent-purple/10 transition-all duration-300"
+          >
+            <span className="font-medium">My podcast on Spotify</span>
+          </a>
         </div>
       </div>
 

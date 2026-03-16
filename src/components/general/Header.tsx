@@ -18,7 +18,7 @@ export default function Header() {
     { href: "/", label: "Home" },
     { href: "/resources", label: "Resources" },
     { href: "/blogs", label: "Blogs" },
-    { href: "/support", label: "My Channel" },
+    { href: "/support", label: "Support" },
   ];
 
   return (
@@ -42,7 +42,7 @@ export default function Header() {
           from-orange-600 to-pink-500
         "
       >
-        Portofolio
+        Maxxed Out
       </Link>
 
       {/* --- DESKTOP NAVIGATION --- */}

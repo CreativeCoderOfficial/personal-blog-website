@@ -9,7 +9,7 @@ export default function HomePage() {
   return (
     <>
     <HeroSection/>
-    <ResourceShowcase />
+    {/* <ResourceShowcase />  ==> finish ebook & email capture logic */}
     <AboutSection />
     <FeatureSection />
     <ConnectSection />
