@@ -233,3 +233,6 @@ gitleaks-report.json
 gitleaks-*.json
 gitleaks-reports/
 /src/generated/prisma
+
+.continue/
+.vibe/
