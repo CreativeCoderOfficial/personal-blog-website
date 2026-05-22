@@ -30,7 +30,7 @@ export default function AboutSection() {
             ">
               {/* Replace src with your actual image path later */}
               <img 
-                src="https://github.com/shadcn.png" 
+                src="/static-media/home-photos/professional-photo-resized.png" 
                 alt="Profile" 
                 className="w-full h-full object-cover"
               />

@@ -136,10 +136,10 @@ export default function Hero() {
               shadow-2xl shadow-black/50
               rotate-6 border-4 border-white/5
               overflow-hidden
-              hover:scale-105 hover:rotate-0 hover:z-20 transition-all duration-500
+              hover:scale-105 hover:rotate-0 hover:z-25 transition-all duration-500
             ">
               <img 
-                src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80" 
+                src="/static-media/home-photos/fire-making.png" 
                 alt="Coding Setup" 
                 className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity"
               />
@@ -161,10 +161,10 @@ export default function Hero() {
               -rotate-3 border-4 border-white/5
               overflow-hidden
               z-10
-              hover:scale-105 hover:rotate-0 hover:z-20 transition-all duration-500
+              hover:scale-105 hover:rotate-0 hover:z-25 transition-all duration-500
             ">
               <img 
-                src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" 
+                src="/static-media/home-photos/climbing.png"
                 alt="Project Work" 
                 className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity"
               />
@@ -186,10 +186,10 @@ export default function Hero() {
               rotate-12 border-4 border-white/5
               overflow-hidden
               z-20
-              hover:scale-105 hover:rotate-0 hover:z-20 transition-all duration-500
+              hover:scale-105 hover:rotate-0 hover:z-25 transition-all duration-500
             ">
               <img 
-                src="https://images.unsplash.com/photo-1534972195531-d756b9bfa9f2?auto=format&fit=crop&w=800&q=80" 
+                src="/static-media/home-photos/podcast-cover.png" 
                 alt="Portrait" 
                 className="w-full h-full object-cover"
               />

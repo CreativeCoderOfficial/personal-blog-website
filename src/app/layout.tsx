@@ -5,7 +5,19 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Maxxed Out",
-  description: "My Portfolio",
+  description: "Reaching your elevated potential: enhance productivity, elevate focus & drive, stategic planning & more",
+   icons: {
+    icon: [
+      { url: "/static-media/favicons/favicon-32x32.png" },
+      { url: "/static-media/favicons/favicon-16x16.png" },
+    ],
+    apple: [
+      { url: "/static-media/favicons/apple-touch-icon.png" },
+    ],
+    other: [
+      { url: "/static-media/favicons/favicon.ico" },
+    ],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
