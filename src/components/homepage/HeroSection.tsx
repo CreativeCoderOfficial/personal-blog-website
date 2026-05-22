@@ -164,7 +164,7 @@ export default function Hero() {
               hover:scale-105 hover:rotate-0 hover:z-25 transition-all duration-500
             ">
               <img 
-                src="/static-media/home-photos/professional-photo-resized.png"
+                src="/static-media/home-photos/climbing.png"
                 alt="Project Work" 
                 className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity"
               />

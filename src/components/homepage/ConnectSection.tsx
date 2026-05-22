@@ -52,15 +52,16 @@ export default function ConnectSection() {
 
               {/* Project Details */}
               <h3 className="text-xl font-bold text-text-primary mb-2">
-                 Personalised Housing Feed Automation
+                 Voice-first, agentic system for project management
               </h3>
               <p className="text-text-secondary text-sm mb-6 leading-relaxed">
-                Building an n8n workflow to automatically fetch and filter housing listings from various platforms, delivering personalized updates straight to my WhatsApp.
+                Building a voice first agentic system for project management, aggregating real time user interviews and feedback into concrete analytics and actions.
+                Focusing on EU native design, complying with regulations and integrating with well-known ERP's in Europe.
               </p>
 
               {/* Tech Stack Pills */}
               <div className="flex flex-wrap gap-2">
-                {["n8n", "TypeScript", "Playwright", "Agentic AI"].map((tech) => (
+                {["Next.js", "Pipecat", "WebSocket", "PostgreSQL"].map((tech) => (
                   <span 
                     key={tech} 
                     className="px-2 py-1 text-xs rounded-md bg-white/5 text-text-secondary border border-border-subtle"
